@@ -14,11 +14,29 @@ An AI-powered assistant that recommends government schemes based on a user's pro
 - Application Process Guidance
 
 ## Tech Stack
-- Frontend: React.js, Tailwind CSS
-- Backend: FastAPI, Python
-- AI/RAG: LangChain, FAISS, Sentence Transformers
-- Database: SQLite/PostgreSQL
-- LLM: Hugging Face/Ollama
+
+### Frontend
+- React.js
+- Tailwind CSS
+
+### Backend
+- FastAPI
+- Python
+
+### AI/RAG
+- LangChain
+- FAISS
+- Sentence Transformers
+
+### Database
+- SQLite / PostgreSQL
+
+### LLM
+- Hugging Face Models / Ollama
+
+### Version Control
+- Git
+- GitHub
 
 ## Installation
 
@@ -40,9 +58,26 @@ npm install
 npm run dev
 ```
 
-## Team Members
-- Member 1 – Data Collection
-- Member 2 – AI/RAG Development
-- Member 3 – Backend Development
-- Member 4 – Frontend Development
-- Member 5 – Integration & Documentation
+## Team Responsibilities
+
+### Member 1 – Data Collection
+- Collect Telangana Government Scheme Data
+- Create Structured Dataset
+
+### Member 2 – AI/RAG Developer
+- Build Recommendation Engine
+- Implement Vector Search
+
+### Member 3 – Backend Developer
+- Develop APIs
+- Implement Eligibility Logic
+
+### Member 4 – Frontend Developer
+- Build User Interface
+- Create Chatbot Integration
+
+### Member 5 – Integration & Documentation
+- Testing
+- Deployment
+- PPT
+- Documentation
