@@ -1,0 +1,43 @@
+Scheme Name: Pradhan Mantri Shram Yogi Maandhan (PM-SYM)
+
+Ministry / Department:
+Ministry of Labour and Employment, Government of India.
+
+Purpose:
+PM-SYM is a pension scheme for eligible unorganised workers to provide old-age social security.
+
+Benefits:
+- Assured monthly pension after 60 years as per scheme rules.
+- Voluntary and contributory pension scheme.
+- Government contributes matching share to the subscriber contribution.
+- Supports workers such as street vendors, domestic workers, agricultural workers, construction workers, and other unorganised workers.
+
+Eligibility:
+- Unorganised worker generally aged 18 to 40 years.
+- Monthly income ceiling applies as per scheme rules.
+- Should not be covered under certain statutory social security schemes.
+- Should have Aadhaar and savings bank account / Jan Dhan account.
+
+Documents Commonly Required:
+- Aadhaar card.
+- Savings bank or Jan Dhan account details.
+- Mobile number.
+- Self-certification of occupation and income.
+
+Where to Apply:
+- Common Service Centre (CSC).
+- Official portal: https://maandhan.in
+- Labour department facilitation centres where available.
+
+Common Citizen Issues:
+- Age or income mismatch.
+- Auto-debit failure.
+- Wrong bank details.
+- Confusion between PM-SYM and Atal Pension Yojana.
+- Difficulty updating nominee or bank account.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Labour and Employment. Local enrolment records may be held by CSC and labour department offices.
+
+Official Source:
+https://maandhan.in

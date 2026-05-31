@@ -1,0 +1,43 @@
+Scheme Name: Soil Health Card Scheme
+
+Ministry / Department:
+Department of Agriculture and Farmers Welfare, Government of India.
+
+Purpose:
+The Soil Health Card Scheme helps farmers understand soil nutrient status and receive crop-wise fertilizer recommendations.
+
+Benefits:
+- Soil testing and soil health card generation.
+- Recommendations on nutrients, fertilisers, and soil amendments.
+- Helps farmers reduce unnecessary fertiliser use and improve productivity.
+- Promotes balanced nutrient management.
+
+Eligibility:
+- Farmers whose soil samples are collected under the scheme through state agriculture machinery.
+- Availability depends on state sampling schedule and local agriculture department implementation.
+
+Documents Commonly Required:
+- Farmer identity details.
+- Aadhaar card where required.
+- Land details / survey number.
+- Mobile number.
+- Crop details if requested.
+
+Where to Apply:
+- Local agriculture officer.
+- Soil testing laboratory.
+- Farmer service centre / agriculture department camp.
+- Official portal: https://soilhealth.dac.gov.in
+
+Common Citizen Issues:
+- Soil sample not collected.
+- Soil Health Card not generated.
+- Wrong land or farmer details.
+- Difficulty understanding fertilizer recommendation.
+- Delay in lab testing.
+
+RTI Department / Office:
+Public Information Officer, Department of Agriculture and Farmers Welfare. Local records may be held by State Agriculture Department and soil testing laboratories.
+
+Official Source:
+https://soilhealth.dac.gov.in

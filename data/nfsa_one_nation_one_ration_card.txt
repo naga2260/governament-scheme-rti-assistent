@@ -1,0 +1,43 @@
+Scheme Name: National Food Security Act (NFSA) and One Nation One Ration Card
+
+Ministry / Department:
+Department of Food and Public Distribution, Ministry of Consumer Affairs, Food and Public Distribution, Government of India.
+
+Purpose:
+NFSA provides subsidised food grains to eligible households through the Public Distribution System. One Nation One Ration Card helps eligible ration card holders access food grains from fair price shops across India using portability.
+
+Benefits:
+- Subsidised food grains for eligible Priority Household and Antyodaya Anna Yojana households.
+- Portability of ration benefits across states and districts under One Nation One Ration Card.
+- Aadhaar-enabled authentication at fair price shops where implemented.
+- Helps migrant workers and mobile families access ration benefits away from home.
+
+Eligibility:
+- Household must be covered under NFSA by the state or union territory.
+- Priority Household and Antyodaya Anna Yojana eligibility is decided by state rules and official beneficiary lists.
+- Aadhaar seeding and ration card details may be required for portability.
+
+Documents Commonly Required:
+- Ration card / food security card.
+- Aadhaar card of family members.
+- Mobile number.
+- Residence proof where required.
+- Income or category proof where required by state rules.
+
+Where to Apply:
+- State food and civil supplies department.
+- MeeSeva / CSC / ration card service portal where available.
+- Local ration office or fair price shop for status and eKYC support.
+
+Common Citizen Issues:
+- Name missing from ration card.
+- Aadhaar or mobile not seeded.
+- Ration portability not working.
+- Biometric authentication failure.
+- Wrong quantity issued by fair price shop.
+
+RTI Department / Office:
+Public Information Officer, Department of Food and Public Distribution. Local records are held by State Food and Civil Supplies Department, District Supply Office, and fair price shop authorities.
+
+Official Source:
+https://nfsa.gov.in and https://impds.nic.in

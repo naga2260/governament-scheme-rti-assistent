@@ -1,0 +1,42 @@
+Scheme Name: Udyam Registration for MSMEs
+
+Ministry / Department:
+Ministry of Micro, Small and Medium Enterprises, Government of India.
+
+Purpose:
+Udyam Registration provides official MSME registration for eligible micro, small, and medium enterprises.
+
+Benefits:
+- Free online MSME registration.
+- Helps enterprises access MSME schemes, credit support, tenders, delayed payment protections, and other benefits where applicable.
+- Permanent registration number and e-certificate.
+- Linked with PAN/GST data as per rules.
+
+Eligibility:
+- Enterprise must meet MSME classification criteria based on investment and turnover.
+- Proprietorship, partnership, company, LLP, SHG, cooperative, trust, or other eligible entity can register as applicable.
+- Aadhaar/PAN/GST details are used as per registration rules.
+
+Documents Commonly Required:
+- Aadhaar number of proprietor/authorised signatory.
+- PAN.
+- GSTIN where applicable.
+- Business details.
+- Bank details.
+- Social category and activity details.
+
+Where to Apply:
+- Official portal: https://udyamregistration.gov.in
+
+Common Citizen Issues:
+- Fake paid registration websites.
+- PAN/GST validation failure.
+- Wrong NIC/activity code.
+- Certificate not downloaded.
+- Updating enterprise details.
+
+RTI Department / Office:
+Public Information Officer, Ministry of MSME. Registration records are maintained through the Udyam portal.
+
+Official Source:
+https://udyamregistration.gov.in

@@ -1,0 +1,38 @@
+Scheme Name: DigiLocker
+
+Ministry / Department:
+Ministry of Electronics and Information Technology, Government of India.
+
+Purpose:
+DigiLocker provides a secure digital document wallet for citizens to access and share issued documents and certificates.
+
+Benefits:
+- Access digital driving licence, vehicle registration, education certificates, Aadhaar-linked documents, and other issued records where available.
+- Digital documents from issuers are legally accepted under applicable rules.
+- Reduces need to carry physical documents.
+- Allows document sharing and verification.
+
+Eligibility:
+- Citizens can register using mobile number and identity verification.
+- Aadhaar linking enables access to many issued documents.
+
+Documents Commonly Required:
+- Mobile number.
+- Aadhaar number where linking is used.
+- Basic profile details.
+
+Where to Apply:
+- DigiLocker portal/app: https://www.digilocker.gov.in
+
+Common Citizen Issues:
+- OTP not received.
+- Document not found.
+- Aadhaar linking issue.
+- Name/date mismatch.
+- Issuer not available.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Electronics and Information Technology. Document-specific records are held by issuing department/authority.
+
+Official Source:
+https://www.digilocker.gov.in

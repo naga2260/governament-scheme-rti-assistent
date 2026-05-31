@@ -1,0 +1,40 @@
+Scheme Name: National Career Service (NCS)
+
+Ministry / Department:
+Ministry of Labour and Employment, Government of India.
+
+Purpose:
+National Career Service provides a digital platform for job seekers, employers, counsellors, and career centres.
+
+Benefits:
+- Job seeker registration and job matching.
+- Career counselling and employment-related services.
+- Job fairs and employer postings.
+- Access to government and private job opportunities listed on the portal.
+
+Eligibility:
+- Job seekers, students, employers, placement organisations, and counsellors can register as per portal rules.
+- Some services may require identity verification and profile completion.
+
+Documents Commonly Required:
+- Aadhaar or identity details where required.
+- Mobile number and email.
+- Education and skill details.
+- Resume / employment history.
+
+Where to Apply:
+- NCS portal: https://www.ncs.gov.in
+- Model Career Centres and employment exchanges where available.
+
+Common Citizen Issues:
+- Login or OTP issue.
+- Fake job concerns.
+- Employer not responding.
+- Profile not visible.
+- Job fair registration confusion.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Labour and Employment. Portal-specific support is handled by NCS helpdesk.
+
+Official Source:
+https://www.ncs.gov.in

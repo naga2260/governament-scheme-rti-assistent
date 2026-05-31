@@ -1,0 +1,41 @@
+Scheme Name: eSanjeevani - National Telemedicine Service
+
+Ministry / Department:
+Ministry of Health and Family Welfare, Government of India.
+
+Purpose:
+eSanjeevani provides telemedicine consultation services so citizens can access doctors remotely.
+
+Benefits:
+- Online doctor consultation from home or through health and wellness centres.
+- Reduces travel and waiting time for basic medical consultation.
+- Supports e-prescription generation where available.
+- Useful for follow-up and primary health advice.
+
+Eligibility:
+- Citizens can use available eSanjeevani OPD services where operational.
+- Availability depends on state schedules, doctor availability, and service timings.
+
+Documents Commonly Required:
+- Mobile number.
+- Basic patient details.
+- Existing medical records if relevant.
+- ABHA may be useful where integration is available.
+
+Where to Apply:
+- eSanjeevani portal: https://esanjeevani.mohfw.gov.in
+- eSanjeevani mobile app where available.
+- Health and Wellness Centre assisted teleconsultation.
+
+Common Citizen Issues:
+- Doctor not available.
+- Long queue.
+- OTP/login issue.
+- Prescription not downloaded.
+- Internet or audio/video problem.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Health and Family Welfare. State telemedicine records may be held by state health department.
+
+Official Source:
+https://esanjeevani.mohfw.gov.in

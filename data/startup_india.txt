@@ -1,0 +1,42 @@
+Scheme Name: Startup India
+
+Ministry / Department:
+Department for Promotion of Industry and Internal Trade, Ministry of Commerce and Industry, Government of India.
+
+Purpose:
+Startup India supports eligible startups through recognition, compliance benefits, funding access information, and ecosystem support.
+
+Benefits:
+- DPIIT startup recognition for eligible entities.
+- Access to startup benefits, learning resources, events, and government programmes.
+- Tax and intellectual property related benefits may apply if additional conditions are met.
+- Supports innovation and entrepreneurship.
+
+Eligibility:
+- Entity should be a private limited company, registered partnership firm, or LLP.
+- Age of entity, turnover, innovation/scalability, and original entity conditions apply as per DPIIT rules.
+- Startup should not be formed by splitting or reconstructing an existing business.
+
+Documents Commonly Required:
+- Entity registration certificate.
+- PAN.
+- Brief write-up about innovation/business model.
+- Website/pitch deck/video where available.
+- Authorisation letter where applicable.
+
+Where to Apply:
+- Startup India portal: https://www.startupindia.gov.in
+- DPIIT recognition application online.
+
+Common Citizen Issues:
+- Recognition rejected due to insufficient innovation details.
+- Wrong entity type.
+- Tax exemption confusion.
+- Certificate download issue.
+- Profile update problem.
+
+RTI Department / Office:
+Public Information Officer, DPIIT, Ministry of Commerce and Industry.
+
+Official Source:
+https://www.startupindia.gov.in

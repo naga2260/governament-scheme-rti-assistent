@@ -1,0 +1,39 @@
+Scheme Name: PM-WANI
+
+Ministry / Department:
+Department of Telecommunications, Ministry of Communications, Government of India.
+
+Purpose:
+PM-WANI promotes public Wi-Fi networks through Public Data Offices to improve broadband access.
+
+Benefits:
+- Enables public Wi-Fi access through PDOs.
+- Creates local entrepreneurship opportunities for small shops and service providers.
+- Helps citizens access affordable internet in public locations.
+- No telecom licence fee for PDOs as per framework.
+
+Eligibility:
+- Citizens can use available PM-WANI Wi-Fi services through participating apps/providers.
+- Shops and entrepreneurs can become Public Data Offices through PDO aggregators as per framework.
+
+Documents Commonly Required:
+- For users: mobile number/app login as required.
+- For PDOs: identity/business details as requested by PDO aggregator.
+- Bank or payment details where applicable.
+
+Where to Apply:
+- Through participating PM-WANI apps and PDO aggregators.
+- Official information: https://dot.gov.in
+
+Common Citizen Issues:
+- Wi-Fi hotspot not available.
+- App login/payment issue.
+- Slow or unstable connectivity.
+- PDO onboarding confusion.
+- Local support not available.
+
+RTI Department / Office:
+Public Information Officer, Department of Telecommunications. Provider-specific records are held by concerned PDOA/app provider.
+
+Official Source:
+https://dot.gov.in

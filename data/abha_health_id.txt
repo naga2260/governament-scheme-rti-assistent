@@ -1,0 +1,41 @@
+Scheme Name: Ayushman Bharat Health Account (ABHA)
+
+Ministry / Department:
+National Health Authority, Ministry of Health and Family Welfare, Government of India.
+
+Purpose:
+ABHA provides a digital health account number that helps citizens link and access health records digitally under the Ayushman Bharat Digital Mission.
+
+Benefits:
+- Unique digital health account number.
+- Helps link prescriptions, lab reports, discharge summaries, and other health records with consent.
+- Supports digital health services and record sharing across participating facilities.
+- Free voluntary service for citizens.
+
+Eligibility:
+- Any citizen can create ABHA voluntarily.
+- Aadhaar or other approved identity/mobile verification may be used.
+- Use of linked health records requires consent.
+
+Documents Commonly Required:
+- Aadhaar card or other supported identity.
+- Mobile number.
+- Basic demographic details.
+
+Where to Apply:
+- ABHA portal: https://abha.abdm.gov.in
+- ABDM Health Records app.
+- Participating hospitals, health facilities, and digital health apps.
+
+Common Citizen Issues:
+- OTP not received.
+- Mobile number mismatch.
+- Duplicate ABHA confusion.
+- Difficulty linking health records.
+- Consent or privacy doubts.
+
+RTI Department / Office:
+Public Information Officer, National Health Authority. Facility-specific records are held by the concerned hospital/health provider.
+
+Official Source:
+https://abha.abdm.gov.in and https://abdm.gov.in

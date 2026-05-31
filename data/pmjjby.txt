@@ -1,0 +1,44 @@
+Scheme Name: Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY)
+
+Ministry / Department:
+Department of Financial Services, Ministry of Finance, Government of India.
+
+Purpose:
+PMJJBY provides low-cost life insurance cover through banks and participating insurers.
+
+Benefits:
+- Life insurance cover of Rs. 2 lakh for death due to any reason, subject to scheme rules.
+- Annual renewable insurance linked to a bank or post office account.
+- Low annual premium auto-debited from the subscriber account.
+- Provides basic financial protection to the family of the insured person.
+
+Eligibility:
+- Indian citizens generally in the age group of 18 to 50 years with a savings bank or post office account.
+- Consent for auto-debit of premium is required.
+- Coverage and renewal depend on premium payment and scheme terms.
+
+Documents Commonly Required:
+- Aadhaar card.
+- Bank or post office savings account details.
+- Mobile number.
+- Nominee details.
+- PMJJBY enrolment / consent form.
+
+Where to Apply:
+- Bank branch.
+- Post office where available.
+- Bank Mitra / digital banking channels where enabled.
+- Official information: https://jansuraksha.gov.in
+
+Common Citizen Issues:
+- Premium not auto-debited.
+- Policy not renewed.
+- Nominee claim delay.
+- Bank account mismatch.
+- Confusion between PMJJBY and PMSBY.
+
+RTI Department / Office:
+Public Information Officer, Department of Financial Services. Account-specific records are held by the bank/post office and insurer.
+
+Official Source:
+https://jansuraksha.gov.in

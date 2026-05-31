@@ -1,0 +1,42 @@
+Scheme Name: National Agriculture Market (e-NAM)
+
+Ministry / Department:
+Department of Agriculture and Farmers Welfare, Government of India.
+
+Purpose:
+e-NAM is an online trading platform that links agricultural produce markets to help farmers and traders discover better prices.
+
+Benefits:
+- Online trading and price discovery for agricultural commodities in participating mandis.
+- Access to wider buyer base where mandi is integrated with e-NAM.
+- Quality assaying, electronic bidding, and e-payment facilities where available.
+- Helps improve transparency in agricultural marketing.
+
+Eligibility:
+- Farmers, traders, commission agents, FPOs, and other market participants registered with participating e-NAM mandis.
+- Availability depends on commodity, mandi integration, and state APMC rules.
+
+Documents Commonly Required:
+- Aadhaar card or identity proof.
+- Bank account details.
+- Mobile number.
+- Mandi registration details.
+- Farmer/FPO/trader registration documents where applicable.
+
+Where to Apply:
+- Participating APMC mandi.
+- e-NAM portal: https://enam.gov.in
+- Mandi helpdesk or agriculture marketing office.
+
+Common Citizen Issues:
+- Mandi not integrated with e-NAM.
+- Commodity not available for online trade.
+- Payment delay.
+- Quality assaying dispute.
+- Login or registration problem.
+
+RTI Department / Office:
+Public Information Officer, Department of Agriculture and Farmers Welfare. Local mandi records are held by APMC/market committee.
+
+Official Source:
+https://enam.gov.in

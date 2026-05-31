@@ -1,0 +1,45 @@
+Scheme Name: Pradhan Mantri Suraksha Bima Yojana (PMSBY)
+
+Ministry / Department:
+Department of Financial Services, Ministry of Finance, Government of India.
+
+Purpose:
+PMSBY provides low-cost accident insurance cover to eligible bank or post office account holders.
+
+Benefits:
+- Accident insurance cover as per scheme rules for accidental death or disability.
+- Annual renewable cover with low premium.
+- Premium is auto-debited from the linked bank or post office account.
+- Useful for workers, students, self-employed persons, and low-income households.
+
+Eligibility:
+- Indian citizens generally in the age group of 18 to 70 years with a bank or post office savings account.
+- Consent for auto-debit is required.
+- Claim depends on accident/disability documentation and policy status.
+
+Documents Commonly Required:
+- Aadhaar card.
+- Bank or post office account details.
+- Mobile number.
+- Nominee details.
+- PMSBY enrolment / consent form.
+- FIR, medical records, disability certificate, or death certificate for claims as applicable.
+
+Where to Apply:
+- Bank branch.
+- Post office where available.
+- Bank Mitra / digital banking channels where enabled.
+- Official information: https://jansuraksha.gov.in
+
+Common Citizen Issues:
+- Policy not renewed due to insufficient balance.
+- Claim rejected for missing accident proof.
+- Nominee details not updated.
+- Delay in disability certificate.
+- Confusion about coverage period.
+
+RTI Department / Office:
+Public Information Officer, Department of Financial Services. Account-specific records are held by the bank/post office and insurer.
+
+Official Source:
+https://jansuraksha.gov.in

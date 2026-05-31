@@ -1,0 +1,43 @@
+Scheme Name: National Means-cum-Merit Scholarship Scheme (NMMSS)
+
+Ministry / Department:
+Department of School Education and Literacy, Ministry of Education, Government of India.
+
+Purpose:
+NMMSS provides scholarships to meritorious students from economically weaker sections to reduce dropout after class 8.
+
+Benefits:
+- Annual scholarship support for selected students studying in classes 9 to 12, subject to renewal rules.
+- Encourages continuation of secondary education.
+- Scholarship is usually disbursed through DBT after verification on the National Scholarship Portal.
+
+Eligibility:
+- Student must qualify in the state-level NMMSS selection examination.
+- Family income ceiling applies as per scheme rules.
+- Student should study in eligible government/government-aided/local body schools.
+- Renewal depends on academic performance and continuation in eligible classes.
+
+Documents Commonly Required:
+- Aadhaar card.
+- Bank account details.
+- Income certificate.
+- School certificate / bonafide certificate.
+- Caste/category certificate where applicable.
+- Mark sheets.
+
+Where to Apply:
+- National Scholarship Portal: https://scholarships.gov.in
+- School and state education department verification channels.
+
+Common Citizen Issues:
+- NSP application rejected during school/district/state verification.
+- Bank account or Aadhaar mismatch.
+- Scholarship not credited.
+- Renewal application missed.
+- Income certificate issue.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Education. Local verification records may be held by school, district education office, and state nodal officer.
+
+Official Source:
+https://scholarships.gov.in and https://education.gov.in
