@@ -1,11 +1,16 @@
 # utils/embedder.py
-from langchain_community.embeddings import HuggingFaceEmbeddings
+import os
+import streamlit as st
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 def get_embedding_model():
-    # BGE-M3 or MiniLM handle multilingual data beautifully
-    model_name = "BAAI/bge-small-en-v1.5" 
-    encode_kwargs = {'normalize_embeddings': True}
-    return HuggingFaceEmbeddings(
-        model_name=model_name,
-        encode_kwargs=encode_kwargs
+    # Fetch API Key from Vercel Environment Variables or local Streamlit secrets
+    api_key = os.environ.get("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
+    
+    if not api_key:
+        raise ValueError("GOOGLE_API_KEY is missing! Add it to Vercel Environment Variables.")
+        
+    return GoogleGenerativeAIEmbeddings(
+        model="models/embedding-001",
+        google_api_key=api_key
     )
