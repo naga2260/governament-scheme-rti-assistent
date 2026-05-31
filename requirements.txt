@@ -3,5 +3,6 @@ langchain-core
 langchain-community
 langchain-google-genai
 langchain-text-splitters
+google-genai
 numpy
 torchvision

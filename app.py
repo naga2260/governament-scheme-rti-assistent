@@ -3,8 +3,9 @@ import streamlit as st
 import streamlit.components.v1 as components
 import os
 import html
+import hashlib
 from utils.loader import ingest_documents
-from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP
+from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP, transcribe_audio_query
 from utils.rti_generator import generate_rti_draft
 
 st.set_page_config(page_title="Praja Sahaya RAG", layout="wide")
@@ -248,6 +249,55 @@ def greeting_response():
     return "Hello! Ask me about eligible schemes, scheme benefits, required documents, or where to apply."
 
 
+def create_chat_response(user_query):
+    selected_schemes = find_schemes_in_query(user_query)
+
+    if is_greeting_query(user_query):
+        return greeting_response()
+
+    if is_all_eligible_query(user_query):
+        if not st.session_state.user_profile:
+            return "Please fill and apply your profile in the sidebar first, then I can list matching schemes."
+
+        items = get_profile_scheme_matches(st.session_state.user_profile)
+        intro = (
+            f"Found **{len(items)} schemes** that match or may match your current profile. "
+            "Open any scheme below to see benefits, documents, portal, office, and why it matched."
+        )
+        return {"type": "scheme_cards", "intro": intro, "items": items}
+
+    if selected_schemes:
+        items = []
+        for scheme_key in selected_schemes:
+            status = None
+            reasons = None
+            if st.session_state.user_profile:
+                status, reasons = evaluate_scheme_for_profile(scheme_key, st.session_state.user_profile)
+            items.append({"scheme": scheme_key, "status": status, "reasons": reasons})
+
+        return {
+            "type": "scheme_cards",
+            "intro": "Here is the structured scheme information. Open the card for the full details.",
+            "items": items,
+        }
+
+    enriched_query = user_query
+    if st.session_state.user_profile:
+        p = st.session_state.user_profile
+        enriched_query += f" (User profile: age {p['age']}, gender {p['gender']}, profession {p['profession']}, state {p['state']}, annual income Rs.{p['income']}, category {p['caste']}. Give practical, structured advice and mention if more details are needed.)"
+
+    res, docs = execute_rag_pipeline(enriched_query, st.session_state.lang)
+    return res
+
+
+def render_chat_content(content):
+    if isinstance(content, dict) and content.get("type") == "scheme_cards":
+        st.markdown(content["intro"])
+        render_scheme_expanders(content["items"])
+    else:
+        st.markdown(content)
+
+
 # --- SIDEBAR: DYNAMIC PROFILE CAPTURE & CONTROLS ---
 with st.sidebar:
     st.header("🌐 Language / భాష")
@@ -305,14 +355,35 @@ with tab1:
     
     if "messages" not in st.session_state:
         st.session_state.messages = []
-        
+
+    with st.expander("🎙️ Voice Input / వాయిస్ ఇన్‌పుట్"):
+        st.caption("Record in English or Telugu. The app will transcribe it and answer like a typed query.")
+        audio_query = st.audio_input("Record your question")
+        if audio_query is not None:
+            audio_bytes = audio_query.getvalue()
+            audio_digest = hashlib.sha256(audio_bytes).hexdigest()
+            if st.session_state.get("last_audio_digest") != audio_digest:
+                st.session_state.last_audio_digest = audio_digest
+                with st.spinner("Transcribing audio..."):
+                    transcript, audio_error = transcribe_audio_query(
+                        audio_bytes,
+                        audio_query.type or "audio/wav",
+                        st.session_state.lang,
+                    )
+
+                if audio_error:
+                    st.error(audio_error)
+                else:
+                    st.success(f"Transcribed: {transcript}")
+                    st.session_state.messages.append({"role": "user", "content": f"🎙️ {transcript}"})
+                    with st.spinner("Analyzing voice query..."):
+                        voice_response = create_chat_response(transcript)
+                    st.session_state.messages.append({"role": "assistant", "content": voice_response})
+                    st.rerun()
+
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
-            if isinstance(msg["content"], dict) and msg["content"].get("type") == "scheme_cards":
-                st.markdown(msg["content"]["intro"])
-                render_scheme_expanders(msg["content"]["items"])
-            else:
-                st.markdown(msg["content"])
+            render_chat_content(msg["content"])
             
     if user_query := st.chat_input("Enter your query..."):
         st.session_state.messages.append({"role": "user", "content": user_query})
@@ -321,51 +392,9 @@ with tab1:
             
         with st.chat_message("assistant"):
             with st.spinner("Searching records..."):
-                selected_schemes = find_schemes_in_query(user_query)
-
-                if is_greeting_query(user_query):
-                    res = greeting_response()
-                    st.markdown(res)
-                    st.session_state.messages.append({"role": "assistant", "content": res})
-                elif is_all_eligible_query(user_query):
-                    if not st.session_state.user_profile:
-                        res = "Please fill and apply your profile in the sidebar first, then I can list matching schemes."
-                        st.markdown(res)
-                        st.session_state.messages.append({"role": "assistant", "content": res})
-                    else:
-                        items = get_profile_scheme_matches(st.session_state.user_profile)
-                        intro = (
-                            f"Found **{len(items)} schemes** that match or may match your current profile. "
-                            "Open any scheme below to see benefits, documents, portal, office, and why it matched."
-                        )
-                        payload = {"type": "scheme_cards", "intro": intro, "items": items}
-                        st.markdown(intro)
-                        render_scheme_expanders(items)
-                        st.session_state.messages.append({"role": "assistant", "content": payload})
-                elif selected_schemes:
-                    items = []
-                    for scheme_key in selected_schemes:
-                        status = None
-                        reasons = None
-                        if st.session_state.user_profile:
-                            status, reasons = evaluate_scheme_for_profile(scheme_key, st.session_state.user_profile)
-                        items.append({"scheme": scheme_key, "status": status, "reasons": reasons})
-
-                    intro = "Here is the structured scheme information. Open the card for the full details."
-                    payload = {"type": "scheme_cards", "intro": intro, "items": items}
-                    st.markdown(intro)
-                    render_scheme_expanders(items)
-                    st.session_state.messages.append({"role": "assistant", "content": payload})
-                else:
-                    # Append user profile parameters directly into the pipeline query if available
-                    enriched_query = user_query
-                    if st.session_state.user_profile:
-                        p = st.session_state.user_profile
-                        enriched_query += f" (User profile: age {p['age']}, gender {p['gender']}, profession {p['profession']}, state {p['state']}, annual income Rs.{p['income']}, category {p['caste']}. Give practical, structured advice and mention if more details are needed.)"
-                    
-                    res, docs = execute_rag_pipeline(enriched_query, st.session_state.lang)
-                    st.markdown(res)
-                    st.session_state.messages.append({"role": "assistant", "content": res})
+                response = create_chat_response(user_query)
+                render_chat_content(response)
+                st.session_state.messages.append({"role": "assistant", "content": response})
 
 # --- TAB 2: ROUTER & EXPLICIT VALIDATION ---
 with tab2:

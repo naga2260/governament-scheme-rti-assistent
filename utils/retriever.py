@@ -337,6 +337,43 @@ def translate_to_telugu(answer: str, llm):
     return llm.invoke(translate_prompt)
 
 
+def transcribe_audio_query(audio_bytes, mime_type="audio/wav", language="English"):
+    api_key = get_google_api_key()
+    if not api_key:
+        return None, "Google API Key missing. Set GOOGLE_API_KEY in your environment or Streamlit secrets."
+
+    try:
+        from google import genai
+        from google.genai import types
+    except Exception as e:
+        return None, f"Audio input dependency missing: {e}"
+
+    language_hint = "Telugu or English" if language == "Telugu" else "English or Telugu"
+    prompt = f"""
+    Transcribe this voice query for a government schemes chatbot.
+    The speaker may use {language_hint}.
+    Return only the user's spoken query as plain text.
+    If Telugu is spoken, return Telugu script.
+    Do not answer the question. Do not add explanation.
+    """
+
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                prompt,
+                types.Part.from_bytes(data=audio_bytes, mime_type=mime_type),
+            ],
+        )
+        transcript = (response.text or "").strip()
+        if not transcript:
+            return None, "Could not understand the audio. Please try recording again."
+        return transcript, None
+    except Exception as e:
+        return None, f"Could not transcribe audio: {e}"
+
+
 def execute_rag_pipeline(user_query, language="English"):
     api_key = get_google_api_key()
     if not api_key:
