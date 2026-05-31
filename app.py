@@ -17,7 +17,16 @@ st.markdown(
         font-family: "Lohit Telugu", "Potti Sreeramulu", "Gidugu", "Noto Sans Telugu", sans-serif !important;
     }
     .block-container {
-        padding-bottom: 7rem;
+        padding-bottom: 12rem;
+    }
+    div[data-testid="stAudioInput"] {
+        position: fixed;
+        bottom: 5.2rem;
+        left: 23rem;
+        right: 3rem;
+        z-index: 998;
+        background: #0e1117;
+        padding: 0.35rem 0 0.25rem 0;
     }
     div[data-testid="stChatInput"] {
         position: fixed;
@@ -29,6 +38,11 @@ st.markdown(
         padding-top: 0.35rem;
     }
     @media (max-width: 900px) {
+        div[data-testid="stAudioInput"] {
+            left: 1rem;
+            right: 1rem;
+            bottom: 4.8rem;
+        }
         div[data-testid="stChatInput"] {
             left: 1rem;
             right: 1rem;
@@ -204,6 +218,11 @@ def get_profile_scheme_matches(profile):
 
 def is_all_eligible_query(query):
     query = query.lower()
+    has_telugu_scheme_word = "స్కీమ్" in query or "స్కీమ్స్" in query or "పథకం" in query or "పథకాలు" in query
+    has_telugu_all_or_eligible = any(term in query for term in ["అన్ని", "అన్నిటి", "అర్హ", "ఎలిజిబుల్", "చూపించు", "చూపించండి"])
+    if has_telugu_scheme_word and has_telugu_all_or_eligible:
+        return True
+
     return any(phrase in query for phrase in [
         "all schemes",
         "eligible schemes",
@@ -212,6 +231,14 @@ def is_all_eligible_query(query):
         "what schemes",
         "which schemes",
         "recommend schemes",
+        "అర్హమైన పథకాలు",
+        "అన్ని పథకాలు",
+        "అర్హత ఉన్న పథకాలు",
+        "నాకు అర్హత",
+        "నేను అర్హ",
+        "స్కీమ్స్ చూపించు",
+        "పథకాలు చూపించు",
+        "ఎలిజిబుల్ స్కీమ్స్",
     ])
 
 
@@ -356,35 +383,32 @@ with tab1:
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    with st.expander("🎙️ Voice Input / వాయిస్ ఇన్‌పుట్"):
-        st.caption("Record in English or Telugu. The app will transcribe it and answer like a typed query.")
-        audio_query = st.audio_input("Record your question")
-        if audio_query is not None:
-            audio_bytes = audio_query.getvalue()
-            audio_digest = hashlib.sha256(audio_bytes).hexdigest()
-            if st.session_state.get("last_audio_digest") != audio_digest:
-                st.session_state.last_audio_digest = audio_digest
-                with st.spinner("Transcribing audio..."):
-                    transcript, audio_error = transcribe_audio_query(
-                        audio_bytes,
-                        audio_query.type or "audio/wav",
-                        st.session_state.lang,
-                    )
-
-                if audio_error:
-                    st.error(audio_error)
-                else:
-                    st.success(f"Transcribed: {transcript}")
-                    st.session_state.messages.append({"role": "user", "content": f"🎙️ {transcript}"})
-                    with st.spinner("Analyzing voice query..."):
-                        voice_response = create_chat_response(transcript)
-                    st.session_state.messages.append({"role": "assistant", "content": voice_response})
-                    st.rerun()
-
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             render_chat_content(msg["content"])
-            
+
+    audio_query = st.audio_input("🎙️ Voice question / వాయిస్ ప్రశ్న")
+    if audio_query is not None:
+        audio_bytes = audio_query.getvalue()
+        audio_digest = hashlib.sha256(audio_bytes).hexdigest()
+        if st.session_state.get("last_audio_digest") != audio_digest:
+            st.session_state.last_audio_digest = audio_digest
+            with st.spinner("Transcribing audio..."):
+                transcript, audio_error = transcribe_audio_query(
+                    audio_bytes,
+                    audio_query.type or "audio/wav",
+                    st.session_state.lang,
+                )
+
+            if audio_error:
+                st.error(audio_error)
+            else:
+                st.session_state.messages.append({"role": "user", "content": f"🎙️ {transcript}"})
+                with st.spinner("Analyzing voice query..."):
+                    voice_response = create_chat_response(transcript)
+                st.session_state.messages.append({"role": "assistant", "content": voice_response})
+                st.rerun()
+
     if user_query := st.chat_input("Enter your query..."):
         st.session_state.messages.append({"role": "user", "content": user_query})
         with st.chat_message("user"):
