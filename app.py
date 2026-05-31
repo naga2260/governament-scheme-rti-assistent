@@ -1,11 +1,24 @@
 # app.py
 import streamlit as st
+import streamlit.components.v1 as components
 import os
+import html
 from utils.loader import ingest_documents
 from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP
 from utils.rti_generator import generate_rti_draft
 
 st.set_page_config(page_title="Praja Sahaya RAG", layout="wide")
+
+st.markdown(
+    """
+    <style>
+    html, body, [class*="css"], .stText, .stMarkdown, .stButton, .stSelectbox, .stTextInput {
+        font-family: "Lohit Telugu", "Potti Sreeramulu", "Gidugu", "Noto Sans Telugu", sans-serif !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Initialize session state objects for multi-turn execution
 if "lang" not in st.session_state:
@@ -149,22 +162,32 @@ with tab2:
 
 # --- TAB 3: RTI DRAFTING ASSISTANT (Auto-fills Profile Data) ---
 with tab3:
-    st.header("Draft an Official RTI Request")
-    st.caption("This form auto-fills details from your active sidebar profile to save time.")
+    st.header("Automated RTI Request Generator")
+    st.caption("Describe your issue/grievance and we'll analyze it to generate an official RTI document with target department and submission location.")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        # Auto-populate variables if profile state exists, else keep default values blank
-        default_name = ""
-        default_addr = ""
-        if st.session_state.user_profile:
-            p = st.session_state.user_profile
-            default_addr = f"State: {p['state']}, Occupation: {p['profession']}"
-            
-        u_name = st.text_input("Your Full Name / మీ పూర్తి పేరు:", value=default_name)
-        u_addr = st.text_input("Your Full Postal Address / మీ చిరునామా:", value=default_addr)
-        u_dept = st.text_input("Target Govt Department (e.g., Gram Panchayat Office):")
-        u_griv = st.text_area("What specific grievance data do you want to request? (e.g., Delay in ration card distribution):")
+    # Display profile context if available
+    if st.session_state.user_profile:
+        p = st.session_state.user_profile
+        st.info(f"📋 **Using Your Profile:** {p['age']} years old, {p['profession']} from {p['state']}")
+    else:
+        st.warning("⚠️ Profile not set in sidebar. Some auto-features may be limited.")
+    
+    # Simplified input: Only issue/grievance needed
+    st.subheader("What is your issue or grievance?")
+    u_issue = st.text_area(
+        "Describe the issue/grievance you want to file an RTI for:",
+        placeholder="E.g., Delay in ration card distribution, non-implementation of welfare scheme, lack of transparency in land records, etc.",
+        height=120
+    )
+    
+    # Optional: Allow user to provide basic info if not using profile
+    with st.expander("📝 Optional: Provide Your Contact Details (Auto-filled from profile if available)"):
+        col1, col2 = st.columns(2)
+        with col1:
+            default_name = ""
+            if st.session_state.user_profile:
+                default_name = f"User ({st.session_state.user_profile['age']} yrs, {st.session_state.user_profile['profession']})"
+            u_name = st.text_input("Your Name:", value=default_name)
         
     with col2:
         st.markdown("### Preview Draft Application")
