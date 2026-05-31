@@ -1,0 +1,55 @@
+Scheme Name: National Social Assistance Programme (NSAP)
+
+Ministry / Department:
+Ministry of Rural Development, Government of India.
+
+Purpose:
+NSAP provides social assistance to poor households for old age, widowhood, disability, death of primary breadwinner, and food security support for certain uncovered senior citizens.
+
+Main Components:
+- Indira Gandhi National Old Age Pension Scheme (IGNOAPS).
+- Indira Gandhi National Widow Pension Scheme (IGNWPS).
+- Indira Gandhi National Disability Pension Scheme (IGNDPS).
+- National Family Benefit Scheme (NFBS).
+- Annapurna Scheme.
+
+Benefits:
+- IGNOAPS: Central pension contribution of Rs. 200 per month for BPL persons aged 60 to 79; Rs. 500 per month for beneficiaries aged 80 and above. State Governments may add their own contribution.
+- IGNWPS: Central pension contribution of Rs. 200 per month for BPL widows aged 40 to 59; States may add contribution.
+- IGNDPS: Central pension contribution for BPL persons aged 18 to 59 with severe or multiple disabilities.
+- NFBS: Lump sum assistance to a BPL household on death of primary breadwinner, subject to scheme rules.
+- Annapurna: 10 kg food grains per month free of cost for eligible senior citizens who remain uncovered under old age pension.
+
+Eligibility:
+- Beneficiary should belong to a household below poverty line as per scheme criteria.
+- Component-specific age, widowhood, disability, or family benefit conditions apply.
+- State/UT implementation rules and beneficiary lists are used for selection and payment.
+
+Documents Commonly Required:
+- Aadhaar Card.
+- Age proof.
+- BPL/ration card or poverty status document.
+- Bank or post office account details.
+- Death certificate for NFBS.
+- Disability certificate for disability pension.
+- Widow certificate / death certificate of spouse for widow pension.
+
+Where to Apply:
+- Gram Panchayat / Ward Secretariat.
+- Mandal / Block Development Office.
+- Social Welfare Department / Rural Development Department, depending on State.
+- Official portal: https://nsap.nic.in
+
+Common Citizen Issues:
+- Pension stopped.
+- Name missing from beneficiary list.
+- Payment delayed.
+- Bank account inactive or Aadhaar mismatch.
+- Age/category correction required.
+- Death or disability certificate pending.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Rural Development. State Social Welfare/Rural Development Department, District Social Welfare Office, Block Office, or Gram Panchayat may hold beneficiary records.
+
+Official Source:
+https://nsap.nic.in/circular.do?method=faq

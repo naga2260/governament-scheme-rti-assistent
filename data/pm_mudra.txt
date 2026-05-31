@@ -1,0 +1,48 @@
+Scheme Name: Pradhan Mantri Mudra Yojana (PMMY)
+
+Ministry / Department:
+Department of Financial Services, Ministry of Finance, Government of India. Implemented through banks, MFIs, NBFCs, and other lending institutions.
+
+Purpose:
+PMMY provides loans to non-corporate, non-farm small and micro enterprises for income-generating activities in manufacturing, trading, services, and allied sectors.
+
+Benefits:
+- MUDRA loans are categorized as Shishu, Kishor, and Tarun based on loan size and business stage.
+- Shishu generally covers loans up to Rs. 50,000.
+- Kishor generally covers loans above Rs. 50,000 and up to Rs. 5 lakh.
+- Tarun generally covers loans above Rs. 5 lakh and up to Rs. 10 lakh.
+- Loans can support working capital, equipment, business expansion, and micro-enterprise needs.
+
+Eligibility:
+- Non-corporate, non-farm micro or small business activity.
+- Applicant may be an individual, proprietor, partnership, small manufacturing unit, shopkeeper, vendor, service provider, repair unit, transport operator, artisan, etc., subject to lender rules.
+- Applicant should satisfy the lending institution's credit assessment.
+
+Documents Commonly Required:
+- Identity proof and address proof.
+- Business proof / registration, if available.
+- Bank account statement.
+- Quotation for machinery/equipment, where applicable.
+- Caste/category certificate, if applicable.
+- Photograph and application form.
+
+Where to Apply:
+- Commercial banks.
+- Regional Rural Banks.
+- Small Finance Banks.
+- Micro Finance Institutions.
+- NBFCs.
+- Official information: https://www.mudra.org.in
+
+Common Citizen Issues:
+- Bank rejects loan without clear reason.
+- Collateral or guarantor demanded despite micro-loan category.
+- Application pending for long time.
+- Sanctioned amount lower than requested.
+- Confusion between subsidy scheme and loan scheme.
+
+RTI Department / Office:
+For policy information, Public Information Officer, Department of Financial Services. For a specific loan application, records are with the concerned bank or lending institution.
+
+Official Source:
+https://www.mudra.org.in

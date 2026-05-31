@@ -1,0 +1,48 @@
+Scheme Name: Pradhan Mantri Fasal Bima Yojana (PMFBY)
+
+Ministry / Department:
+Ministry of Agriculture and Farmers Welfare, Government of India.
+
+Purpose:
+PMFBY provides crop insurance support to farmers against crop loss or damage due to notified natural risks and unforeseen events, helping stabilize farmer income and encourage continued farming.
+
+Benefits:
+- Insurance cover for notified food crops, oilseeds, and annual commercial / horticultural crops.
+- Financial support for insured farmers suffering crop loss or damage.
+- Sum insured is linked to the scale of finance per hectare and area of notified crop.
+- Farmer can check premium, application status, and policy information through PMFBY portal.
+- Crop loss reporting and grievance support are available through Krishi Rakshak Portal and helpline.
+
+Eligibility:
+- Farmers growing notified crops in notified areas during the notified season.
+- Both loanee and non-loanee farmers may be covered as per scheme notifications.
+- Crop, area, season, and insurance company depend on State notification.
+
+Documents Commonly Required:
+- Aadhaar Card.
+- Bank account details.
+- Land record / tenancy or crop sowing certificate as applicable.
+- Crop details and area sown.
+- Mobile number.
+- Premium payment details for non-loanee application.
+
+Where to Apply / Check:
+- Official portal: https://pmfby.gov.in
+- Farmer Corner on PMFBY portal.
+- Bank branch / Common Service Centre.
+- State Agriculture Department / insurance company.
+- Helpline for grievances and crop loss reporting: 14447, where available.
+
+Common Citizen Issues:
+- Policy not generated.
+- Premium deducted but application not visible.
+- Claim not received after crop loss.
+- Wrong crop or area entered.
+- Crop loss intimation delayed.
+- Insurance company or bank not responding.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Agriculture and Farmers Welfare. For local claim data, State Agriculture Department, insurance company, bank branch, or District Agriculture Office may hold records.
+
+Official Source:
+https://pmfby.gov.in

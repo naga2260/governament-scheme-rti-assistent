@@ -1,0 +1,43 @@
+Scheme Name: Ayushman Bharat Pradhan Mantri Jan Arogya Yojana (AB PM-JAY)
+
+Ministry / Department:
+National Health Authority, Ministry of Health and Family Welfare, Government of India.
+
+Purpose:
+AB PM-JAY is a public health assurance scheme that provides health cover for eligible poor and vulnerable families for secondary and tertiary care hospitalization.
+
+Benefits:
+- Health cover up to Rs. 5 lakh per eligible family per year.
+- Covers hospitalization for listed procedures in empanelled public and private hospitals.
+- Cashless and paperless treatment at empanelled hospitals.
+- Family size and age restrictions are generally not applied under PM-JAY entitlement.
+
+Eligibility:
+- Eligibility is based on deprivation and occupational criteria from official beneficiary databases used by the scheme.
+- Beneficiaries can check eligibility through official PM-JAY channels, Ayushman card services, Common Service Centres, or empanelled hospital help desks.
+
+Documents Commonly Required:
+- Aadhaar Card or other accepted identity document.
+- Ration card / family ID / beneficiary identification document where applicable.
+- Mobile number.
+- Existing Ayushman card, if already generated.
+
+Where to Apply / Check Eligibility:
+- Official portal: https://pmjay.gov.in
+- Mera PM-JAY services.
+- Common Service Centre (CSC).
+- Ayushman Mitra help desk at empanelled hospitals.
+- State Health Agency / District Implementation Unit.
+
+Common Citizen Issues:
+- Name not found in beneficiary list.
+- Ayushman card not generated.
+- Hospital refuses cashless treatment.
+- Claim or treatment package confusion.
+- Aadhaar or family details mismatch.
+
+RTI Department / Office:
+Public Information Officer, National Health Authority, Ministry of Health and Family Welfare. For state-level beneficiary records, contact the State Health Agency or District PM-JAY office.
+
+Official Source:
+https://pmjay.gov.in

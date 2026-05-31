@@ -1,0 +1,45 @@
+Scheme Name: Atal Pension Yojana (APY)
+
+Ministry / Department:
+Department of Financial Services, Ministry of Finance, Government of India. Administered through Pension Fund Regulatory and Development Authority (PFRDA) and banks/post offices.
+
+Purpose:
+APY is a pension scheme focused on workers in the unorganised sector. It provides a guaranteed minimum monthly pension after the subscriber reaches 60 years of age.
+
+Benefits:
+- Guaranteed minimum pension options of Rs. 1,000, Rs. 2,000, Rs. 3,000, Rs. 4,000, or Rs. 5,000 per month from age 60.
+- Pension amount depends on age of joining and contribution amount.
+- Contributions are auto-debited from the subscriber's savings bank account.
+- In case of death of subscriber, spouse may continue or receive benefits as per APY rules.
+
+Eligibility:
+- Citizen of India.
+- Age between 18 and 40 years at joining.
+- Must have a savings bank account.
+- From 1 October 2022, a person who is or has been an income-tax payer is not eligible to join APY.
+
+Documents Commonly Required:
+- Savings bank account.
+- Aadhaar Card.
+- Mobile number.
+- APY registration form.
+- Nominee details.
+
+Where to Apply:
+- Bank branch where the savings account is held.
+- Post office, where APY is offered.
+- Net banking / mobile banking facility of participating banks, if available.
+- Official information: https://www.jansuraksha.gov.in
+
+Common Citizen Issues:
+- Contribution not debited.
+- Wrong pension slab selected.
+- APY PRAN not received.
+- Bank account closed or insufficient balance.
+- Subscriber wants exit or change of contribution frequency.
+
+RTI Department / Office:
+Public Information Officer, Department of Financial Services or PFRDA for scheme-level information. Subscriber-level account records are usually with the bank/post office and pension system.
+
+Official Source:
+https://www.jansuraksha.gov.in/Files/APY/ENGLISH/APY.pdf

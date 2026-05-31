@@ -1,0 +1,53 @@
+Scheme Name: Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)
+
+Ministry / Department:
+Department of Agriculture and Farmers Welfare, Ministry of Agriculture and Farmers Welfare, Government of India.
+
+Purpose:
+PM-KISAN is a Central Sector scheme that gives income support to eligible landholding farmer families. The support is meant to help farmers meet agriculture and household needs.
+
+Benefits:
+- Rs. 6,000 per year is provided to eligible farmer families.
+- The amount is paid in three equal installments of Rs. 2,000.
+- Payment is transferred directly to the beneficiary bank account through DBT.
+
+Eligibility:
+- Eligible beneficiary is a landholding farmer family.
+- For the scheme, family means husband, wife, and minor children.
+- State Governments and Union Territory administrations identify eligible farmer families as per scheme guidelines.
+- Aadhaar and bank account details are important for receiving benefits.
+
+Major Exclusions:
+- Institutional landholders are not eligible.
+- Farmer families with members holding constitutional posts are excluded.
+- Former/present Ministers, MPs, MLAs, Mayors, and District Panchayat Chairpersons are excluded.
+- Serving or retired Government employees are generally excluded, except Multi Tasking Staff, Class IV, or Group D employees.
+- Pensioners receiving monthly pension of Rs. 10,000 or more are excluded, except eligible Group D type employees.
+- Income tax payers and registered professionals such as doctors, engineers, lawyers, chartered accountants, and architects are excluded.
+
+Documents Commonly Required:
+- Aadhaar Card.
+- Land ownership / pattadar passbook / land record.
+- Bank passbook or bank account details.
+- Mobile number.
+- Farmer registration details, if available.
+
+Where to Apply / Check Status:
+- Official portal: https://pmkisan.gov.in
+- Farmers Corner on PM-KISAN portal.
+- Common Service Centre (CSC).
+- Local agriculture office / revenue office as applicable in the State.
+
+Common Citizen Issues:
+- Installment not received.
+- eKYC pending.
+- Bank account not seeded with Aadhaar.
+- Land record verification pending.
+- Name mismatch between Aadhaar, bank, and land record.
+- Benefit withheld due to suspected exclusion category or physical verification.
+
+RTI Department / Office:
+Public Information Officer, Department of Agriculture and Farmers Welfare, Ministry of Agriculture and Farmers Welfare, Government of India. State Agriculture Department or District Agriculture Officer may hold beneficiary verification records.
+
+Official Source:
+https://pmkisan.gov.in

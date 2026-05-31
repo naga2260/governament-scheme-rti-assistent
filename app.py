@@ -114,12 +114,22 @@ with tab2:
             elif scheme_selection.lower() == "ayushman-bharat" and p["income"] > 250000:
                 is_eligible = False
                 reason_msg = "Income exceeds the low-income ceiling threshold (Max ₹2.5 Lakhs)." if st.session_state.lang == "English" else "మీ వార్షిక ఆదాయం పరిమితి (గరిష్టంగా ₹2.5 లక్షలు) కంటే ఎక్కువగా ఉంది."
+            elif scheme_selection.lower() in ["pm-ujjwala", "pmmvy"] and p["gender"] != "Female":
+                is_eligible = False
+                reason_msg = "This scheme is meant for eligible women applicants." if st.session_state.lang == "English" else "ఈ పథకం అర్హత కలిగిన మహిళా దరఖాస్తుదారుల కోసం."
+            elif scheme_selection.lower() in ["namo-drone-didi", "lakhpati-didi"] and p["gender"] != "Female":
+                is_eligible = False
+                reason_msg = "This scheme is routed through women Self Help Groups." if st.session_state.lang == "English" else "ఈ పథకం మహిళా స్వయం సహాయక సంఘాల ద్వారా అమలు చేయబడుతుంది."
 
         # Display Eligibility status badges dynamically
         if not is_eligible:
             st.error(f"❌ **Not Eligible / అర్హత లేదు:** {reason_msg}")
         else:
             st.success("✅ **Status: Eligible based on basic parameters!**" if st.session_state.lang == "English" else "✅ **స్థితి: ప్రాథమిక పారామితుల ఆధారంగా మీరు అర్హులు!**")
+
+        st.subheader("🎁 Scheme Benefits" if st.session_state.lang == "English" else "🎁 పథకం ప్రయోజనాలు")
+        for benefit in details.get("benefits", []):
+            st.markdown(f"- {benefit}")
 
         # Render routing steps
         if st.session_state.lang == "Telugu":

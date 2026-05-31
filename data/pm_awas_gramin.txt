@@ -1,0 +1,44 @@
+Scheme Name: Pradhan Mantri Awaas Yojana - Gramin (PMAY-G)
+
+Ministry / Department:
+Ministry of Rural Development, Government of India.
+
+Purpose:
+PMAY-G supports eligible rural households to construct pucca houses with basic amenities. It focuses on rural households that are houseless or living in kutcha / dilapidated houses.
+
+Benefits:
+- Financial assistance for construction of a pucca house as per PMAY-G norms.
+- Convergence with other schemes may support toilet construction, drinking water, electricity, LPG, and wage employment.
+- Beneficiary selection is based on official rural housing criteria and verification.
+
+Eligibility:
+- Household should be in a rural area.
+- Household should be houseless or living in kutcha/dilapidated housing as per official eligibility process.
+- Household should not already own a pucca house.
+- Exclusion checks include motorised vehicle ownership, government employment, income tax payment, high income, certain landholding limits, and other criteria.
+
+Documents Commonly Required:
+- Aadhaar Card.
+- Job card / bank account details.
+- Land or house-site details where applicable.
+- Mobile number.
+- Beneficiary registration / survey details.
+
+Where to Apply / Check:
+- Official portal: https://pmayg.nic.in
+- Gram Panchayat.
+- Block Development Office / Mandal Parishad Development Office.
+- District Rural Development Agency / Rural Housing Department.
+
+Common Citizen Issues:
+- Name missing from PMAY-G beneficiary list.
+- House sanctioned but installment not received.
+- Geo-tagging or inspection pending.
+- Bank account or Aadhaar mismatch.
+- Local verification dispute.
+
+RTI Department / Office:
+Public Information Officer, Ministry of Rural Development. Local records may be held by Gram Panchayat, Block Development Office, District Rural Development Agency, or State Rural Housing Department.
+
+Official Source:
+https://pmayg.nic.in

@@ -1,0 +1,45 @@
+Scheme Name: Pradhan Mantri Jan-Dhan Yojana (PMJDY)
+
+Ministry / Department:
+Department of Financial Services, Ministry of Finance, Government of India.
+
+Purpose:
+PMJDY is the National Mission for Financial Inclusion. It ensures access to basic banking, savings, remittance, credit, insurance, and pension services at affordable cost.
+
+Benefits:
+- One basic savings bank deposit account for an unbanked person.
+- No minimum balance requirement in PMJDY accounts.
+- Interest is earned on deposits.
+- RuPay debit card is provided to account holder.
+- Accident insurance cover with RuPay card, enhanced to Rs. 2 lakh for new PMJDY accounts opened after 28 August 2018.
+- Overdraft facility up to Rs. 10,000 for eligible account holders.
+- PMJDY accounts can receive Direct Benefit Transfer and can be linked to PMJJBY, PMSBY, APY, and MUDRA benefits subject to eligibility.
+
+Eligibility:
+- Person not having any other bank account can open a Basic Savings Bank Deposit account under PMJDY.
+- Account can be opened at a bank branch or Business Correspondent / Bank Mitra outlet.
+
+Documents Commonly Required:
+- Aadhaar Card.
+- If Aadhaar is not available, other officially valid documents accepted by banks.
+- Photograph.
+- Mobile number.
+
+Where to Apply:
+- Any bank branch.
+- Business Correspondent / Bank Mitra outlet.
+- Official information: https://www.pmjdy.gov.in
+
+Common Citizen Issues:
+- RuPay card not received or inactive.
+- Accident insurance claim difficulty.
+- DBT not received.
+- Overdraft not approved.
+- Account inactive due to non-use.
+- Aadhaar or mobile not linked.
+
+RTI Department / Office:
+Public Information Officer, Department of Financial Services for scheme-level information. Account-specific records are held by the concerned bank branch.
+
+Official Source:
+https://www.pmjdy.gov.in/scheme-detail.aspx
