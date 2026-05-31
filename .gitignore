@@ -32,3 +32,4 @@ build/
 
 # Accidental pip/version output files
 =*
+.vercel

@@ -4,6 +4,7 @@ import streamlit.components.v1 as components
 import os
 import html
 import hashlib
+from pathlib import Path
 from utils.loader import ingest_documents
 from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP, transcribe_audio_query
 from utils.rti_generator import generate_rti_draft
@@ -63,6 +64,68 @@ if "user_profile" not in st.session_state:
 
 def scheme_label(scheme_key):
     return scheme_key.replace("-", " ").title()
+
+
+def data_file_to_scheme_key(path):
+    return path.stem.replace("_", "-")
+
+
+def parse_scheme_text(text):
+    sections = {}
+    current = None
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if line.endswith(":"):
+            current = line[:-1]
+            sections[current] = []
+        elif current:
+            sections[current].append(line)
+        elif line.startswith("Scheme Name:"):
+            sections["Scheme Name"] = [line.split(":", 1)[1].strip()]
+
+    return sections
+
+
+def clean_bullet_lines(lines):
+    return [line.lstrip("-• ").strip() for line in lines if line.strip()]
+
+
+@st.cache_data
+def load_data_scheme_map():
+    data_dir = Path(__file__).parent / "data"
+    scheme_map = {}
+    for txt_path in sorted(data_dir.glob("*.txt")):
+        scheme_key = data_file_to_scheme_key(txt_path)
+        text = txt_path.read_text(encoding="utf-8")
+        sections = parse_scheme_text(text)
+        source_lines = clean_bullet_lines(sections.get("Official Source", []))
+        portal = source_lines[0] if source_lines else "See source PDF"
+        if portal.startswith("http"):
+            portal = portal.replace("https://", "").replace("http://", "").split("/")[0]
+
+        scheme_map[scheme_key] = {
+            "name": clean_bullet_lines(sections.get("Scheme Name", []))[0] if sections.get("Scheme Name") else scheme_label(scheme_key),
+            "portal": portal,
+            "office": " / ".join(clean_bullet_lines(sections.get("Where to Apply", []))[:3]) or "See source PDF / local department office",
+            "benefits": clean_bullet_lines(sections.get("Benefits", [])),
+            "docs": clean_bullet_lines(sections.get("Documents Commonly Required", [])),
+            "eligibility": clean_bullet_lines(sections.get("Eligibility", [])),
+            "source": source_lines,
+            "raw_text": text,
+        }
+
+    merged_map = dict(scheme_map)
+    for key, details in SCHEME_SUBMISSION_MAP.items():
+        merged = dict(merged_map.get(key, {}))
+        merged.update(details)
+        merged.setdefault("name", scheme_label(key))
+        merged_map[key] = merged
+    return merged_map
+
+
+ALL_SCHEME_MAP = load_data_scheme_map()
 
 
 def get_localized_list(details, base_key):
@@ -176,29 +239,38 @@ def evaluate_scheme_for_profile(scheme_key, profile):
 def build_scheme_summary(scheme_key, details, status=None, reasons=None):
     benefits = get_localized_list(details, "benefits")
     docs = get_localized_list(details, "docs")
+    eligibility = get_localized_list(details, "eligibility")
+    source = details.get("source", [])
     office = get_localized_value(details, "office")
     status_line = f"**Eligibility:** {status}\n\n" if status else ""
     reason_lines = ""
     if reasons:
         reason_lines = "**Why:**\n" + "\n".join([f"- {reason}" for reason in reasons]) + "\n\n"
 
-    return (
-        f"### {scheme_label(scheme_key)}\n\n"
+    summary = (
+        f"### {details.get('name', scheme_label(scheme_key))}\n\n"
         f"{status_line}"
         f"{reason_lines}"
-        "**Benefits:**\n"
-        + "\n".join([f"- {benefit}" for benefit in benefits])
-        + "\n\n**Documents:**\n"
-        + "\n".join([f"- {doc}" for doc in docs])
-        + f"\n\n**Online Portal:** `{details['portal']}`"
+    )
+    if benefits:
+        summary += "**Benefits:**\n" + "\n".join([f"- {benefit}" for benefit in benefits])
+    if eligibility:
+        summary += "\n\n**Eligibility:**\n" + "\n".join([f"- {item}" for item in eligibility])
+    if docs:
+        summary += "\n\n**Documents:**\n" + "\n".join([f"- {doc}" for doc in docs])
+    summary += (
+        f"\n\n**Online Portal / Source:** `{details.get('portal', 'See source PDF')}`"
         + f"\n\n**Offline Office:** {office}"
     )
+    if source:
+        summary += "\n\n**Official Source:**\n" + "\n".join([f"- {item}" for item in source])
+    return summary
 
 
 def render_scheme_expanders(items):
     for item in items:
-        details = SCHEME_SUBMISSION_MAP[item["scheme"]]
-        title = scheme_label(item["scheme"])
+        details = ALL_SCHEME_MAP[item["scheme"]]
+        title = details.get("name", scheme_label(item["scheme"]))
         if item.get("status"):
             title = f"{title} - {item['status']}"
         with st.expander(title):
@@ -207,7 +279,7 @@ def render_scheme_expanders(items):
 
 def get_profile_scheme_matches(profile):
     matches = []
-    for scheme_key in SCHEME_SUBMISSION_MAP:
+    for scheme_key in ALL_SCHEME_MAP:
         status, reasons = evaluate_scheme_for_profile(scheme_key, profile)
         if status != "Not eligible":
             matches.append({"scheme": scheme_key, "status": status, "reasons": reasons})
@@ -245,9 +317,10 @@ def is_all_eligible_query(query):
 def find_schemes_in_query(query):
     normalized = query.lower().replace("_", "-")
     matches = []
-    for scheme_key in SCHEME_SUBMISSION_MAP:
+    for scheme_key, details in ALL_SCHEME_MAP.items():
         readable = scheme_key.replace("-", " ")
-        if scheme_key in normalized or readable in normalized:
+        name = details.get("name", "").lower()
+        if scheme_key in normalized or readable in normalized or (name and name in normalized):
             matches.append(scheme_key)
     return matches
 
@@ -323,6 +396,10 @@ def render_chat_content(content):
         render_scheme_expanders(content["items"])
     else:
         st.markdown(content)
+
+
+def get_scheme_pdf_path(scheme_key):
+    return Path(__file__).parent / "data_pdfs" / f"{scheme_key.replace('-', '_')}.pdf"
 
 
 # --- SIDEBAR: DYNAMIC PROFILE CAPTURE & CONTROLS ---
@@ -423,10 +500,10 @@ with tab1:
 # --- TAB 2: ROUTER & EXPLICIT VALIDATION ---
 with tab2:
     st.header("Document Submission & Eligibility Screener")
-    scheme_selection = st.selectbox("Select Government Scheme to Check:", ["Select"] + list(SCHEME_SUBMISSION_MAP.keys()))
+    scheme_selection = st.selectbox("Select Government Scheme to Check:", ["Select"] + list(ALL_SCHEME_MAP.keys()))
     
     if scheme_selection != "Select":
-        details = SCHEME_SUBMISSION_MAP[scheme_selection]
+        details = ALL_SCHEME_MAP[scheme_selection]
         
         # Hard-coded Rule Based Filter for Demo/Grading Validation
         is_eligible = True
@@ -463,21 +540,44 @@ with tab2:
         for benefit in details.get(benefits_key, details.get("benefits", [])):
             st.markdown(f"- {benefit}")
 
+        pdf_path = get_scheme_pdf_path(scheme_selection)
+        if pdf_path.exists():
+            st.download_button(
+                "📄 Download Source PDF" if st.session_state.lang == "English" else "📄 సోర్స్ PDF డౌన్‌లోడ్ చేయండి",
+                data=pdf_path.read_bytes(),
+                file_name=pdf_path.name,
+                mime="application/pdf",
+            )
+
         # Render routing steps
         if st.session_state.lang == "Telugu":
             st.markdown(f"""
             ### 📋 కావలసిన పత్రాల సమర్పణ వివరాలు:
             * **కావలసిన పత్రాలు:** {', '.join(details.get(docs_key, details.get('docs', [])))}
-            * **ఆన్‌లైన్ అప్లికేషన్ లింక్:** `{details['portal']}`
+            * **ఆన్‌లైన్ అప్లికేషన్ లింక్:** `{details.get('portal', 'See source PDF')}`
             * **ఆఫ్‌లైన్ కార్యాలయం:** మీ సమీపంలోని **{details.get(office_key, details.get('office'))}**.
             """)
         else:
             st.markdown(f"""
             ### 📋 Submission Tracking Information:
             * **Required Documents:** {', '.join(details.get(docs_key, details.get('docs', [])))}
-            * **Where to Submit Online:** Visit official portal `{details['portal']}`
+            * **Where to Submit Online:** Visit official portal `{details.get('portal', 'See source PDF')}`
             * **Where to Submit Offline:** Visit nearest **{details.get(office_key, details.get('office'))}**
             """)
+
+        if details.get("eligibility"):
+            st.markdown("### ✅ Eligibility Details")
+            for item in details["eligibility"]:
+                st.markdown(f"- {item}")
+
+        if details.get("source"):
+            st.markdown("### 🔗 Official Source")
+            for source in details["source"]:
+                st.markdown(f"- {source}")
+
+        if details.get("raw_text") and scheme_selection not in SCHEME_SUBMISSION_MAP:
+            with st.expander("View Full Source Text"):
+                st.text(details["raw_text"])
 
 # --- TAB 3: RTI DRAFTING ASSISTANT (Auto-fills Profile Data) ---
 with tab3:

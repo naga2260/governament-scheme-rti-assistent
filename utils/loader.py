@@ -26,12 +26,12 @@ def get_cached_chunks():
                 f.write(text)
 
     # Read files
-    for file in os.listdir(data_dir):
+    for file in sorted(os.listdir(data_dir)):
         if file.endswith(".txt"):
             with open(os.path.join(data_dir, file), "r", encoding="utf-8") as f:
-                documents.append(f.read())
+                documents.append(f"Source File: {file}\n\n{f.read()}")
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=900, chunk_overlap=120)
     return text_splitter.create_documents(documents)
 
 def ingest_documents():
