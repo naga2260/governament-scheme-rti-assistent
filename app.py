@@ -1,5 +1,6 @@
 # app.py
 import streamlit as st
+import streamlit.components.v1 as components
 import os
 import html
 from utils.loader import ingest_documents
@@ -201,7 +202,10 @@ with tab3:
                         """
 <div>
   <button id="copy-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #777;background:#f5f5f5;cursor:pointer;margin-bottom:10px;">Copy RTI text</button>
-  <textarea id="rti_doc" readonly rows="18" wrap="soft" style="width:100%;height:520px;padding:10px;border:1px solid #ddd;border-radius:8px;white-space:pre-wrap;overflow:auto;">""" + escaped + """</textarea>
+  <textarea id="rti_doc" readonly rows="18" wrap="soft" style="width:100%;height:520px;padding:10px;border:1px solid #ddd;border-radius:8px;white-space:pre-wrap;overflow:auto;">"""
+                        + escaped +
+                        """
+</textarea>
 </div>
 <script>
   const btn = document.getElementById('copy-btn');
@@ -219,9 +223,8 @@ with tab3:
     }
   });
 </script>
-"""
-                    )
-                    st.markdown(copy_html, unsafe_allow_html=True)
+""")
+                    components.html(copy_html, height=640, scrolling=True)
                 
                 with result_tab2:
                     st.markdown(f"### Recommended Target Department")
