@@ -127,12 +127,22 @@ with tab2:
             elif scheme_selection.lower() == "ayushman-bharat" and p["income"] > 250000:
                 is_eligible = False
                 reason_msg = "Income exceeds the low-income ceiling threshold (Max ₹2.5 Lakhs)." if st.session_state.lang == "English" else "మీ వార్షిక ఆదాయం పరిమితి (గరిష్టంగా ₹2.5 లక్షలు) కంటే ఎక్కువగా ఉంది."
+            elif scheme_selection.lower() in ["pm-ujjwala", "pmmvy"] and p["gender"] != "Female":
+                is_eligible = False
+                reason_msg = "This scheme is meant for eligible women applicants." if st.session_state.lang == "English" else "ఈ పథకం అర్హత కలిగిన మహిళా దరఖాస్తుదారుల కోసం."
+            elif scheme_selection.lower() in ["namo-drone-didi", "lakhpati-didi"] and p["gender"] != "Female":
+                is_eligible = False
+                reason_msg = "This scheme is routed through women Self Help Groups." if st.session_state.lang == "English" else "ఈ పథకం మహిళా స్వయం సహాయక సంఘాల ద్వారా అమలు చేయబడుతుంది."
 
         # Display Eligibility status badges dynamically
         if not is_eligible:
             st.error(f"❌ **Not Eligible / అర్హత లేదు:** {reason_msg}")
         else:
             st.success("✅ **Status: Eligible based on basic parameters!**" if st.session_state.lang == "English" else "✅ **స్థితి: ప్రాథమిక పారామితుల ఆధారంగా మీరు అర్హులు!**")
+
+        st.subheader("🎁 Scheme Benefits" if st.session_state.lang == "English" else "🎁 పథకం ప్రయోజనాలు")
+        for benefit in details.get("benefits", []):
+            st.markdown(f"- {benefit}")
 
         # Render routing steps
         if st.session_state.lang == "Telugu":
@@ -179,64 +189,11 @@ with tab3:
                 default_name = f"User ({st.session_state.user_profile['age']} yrs, {st.session_state.user_profile['profession']})"
             u_name = st.text_input("Your Name:", value=default_name)
         
-        with col2:
-            default_addr = ""
-            if st.session_state.user_profile:
-                default_addr = f"{st.session_state.user_profile['state']}"
-            u_addr = st.text_input("Your State/District:", value=default_addr)
-    
-    # Generate RTI document and analysis
-    if st.button("🔍 Analyze Issue & Generate RTI Document"):
-        if u_issue.strip():
-            with st.spinner("Analyzing your issue and generating RTI document..."):
-                result = generate_rti_draft(u_name, u_addr, u_issue, st.session_state.lang)
-                
-                # Display results in tabs
-                result_tab1, result_tab2, result_tab3 = st.tabs(["📄 RTI Document", "🏛️ Target Department & Website", "📍 Submission Location"])
-                
-                with result_tab1:
-                    st.markdown("### Official RTI Request Document")
-                    # Render a readonly textarea plus a client-side Copy button for quick copying
-                    escaped = html.escape(result.get("rti_document", ""))
-                    copy_html = (
-                        """
-<div>
-  <button id="copy-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #777;background:#f5f5f5;cursor:pointer;margin-bottom:10px;">Copy RTI text</button>
-  <textarea id="rti_doc" readonly rows="18" wrap="soft" style="width:100%;height:520px;padding:10px;border:1px solid #ddd;border-radius:8px;white-space:pre-wrap;overflow:auto;">"""
-                        + escaped +
-                        """
-</textarea>
-</div>
-<script>
-  const btn = document.getElementById('copy-btn');
-  btn.addEventListener('click', async () => {
-    const ta = document.getElementById('rti_doc');
-    try {
-      await navigator.clipboard.writeText(ta.value);
-      const prev = btn.innerText;
-      btn.innerText = 'Copied!';
-      setTimeout(() => btn.innerText = prev, 1800);
-    } catch (e) {
-      ta.focus();
-      ta.select();
-      alert('Could not access clipboard programmatically. The text is selected — press Ctrl+C (Cmd+C on Mac) to copy.');
-    }
-  });
-</script>
-""")
-                    components.html(copy_html, height=640, scrolling=True)
-                
-                with result_tab2:
-                    st.markdown(f"### Recommended Target Department")
-                    st.info(f"**Department:** {result['target_department']}")
-                    st.markdown(f"**Website:** [`{result['target_website']}`]({result['target_website']})")
-                    st.markdown(f"**Contact:** {result['contact_info']}")
-                
-                with result_tab3:
-                    st.markdown(f"### Nearest RTI Submission Office")
-                    st.markdown(f"**Location:** {result['nearest_location']}")
-                    st.markdown(f"**Address:** {result['office_address']}")
-                    st.markdown(f"**Contact Number:** {result['office_contact']}")
-                    st.markdown(f"**Office Hours:** {result['office_hours']}")
-        else:
-            st.error("Please describe your issue/grievance before generating the RTI document.")
+    with col2:
+        st.markdown("### Preview Draft Application")
+        if st.button("Generate Official RTI Document"):
+            if u_name and u_addr and u_dept and u_griv:
+                draft = generate_rti_draft(u_name, u_addr, u_dept, u_griv, st.session_state.lang)
+                st.text_area("Copy this text to print/mail:", value=draft, height=350)
+            else:
+                st.error("Please fill in all mandatory fields before rendering.")
