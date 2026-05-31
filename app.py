@@ -140,24 +140,28 @@ with tab2:
         else:
             st.success("✅ **Status: Eligible based on basic parameters!**" if st.session_state.lang == "English" else "✅ **స్థితి: ప్రాథమిక పారామితుల ఆధారంగా మీరు అర్హులు!**")
 
+        benefits_key = "benefits_telugu" if st.session_state.lang == "Telugu" else "benefits"
+        docs_key = "docs_telugu" if st.session_state.lang == "Telugu" else "docs"
+        office_key = "office_telugu" if st.session_state.lang == "Telugu" else "office"
+
         st.subheader("🎁 Scheme Benefits" if st.session_state.lang == "English" else "🎁 పథకం ప్రయోజనాలు")
-        for benefit in details.get("benefits", []):
+        for benefit in details.get(benefits_key, details.get("benefits", [])):
             st.markdown(f"- {benefit}")
 
         # Render routing steps
         if st.session_state.lang == "Telugu":
             st.markdown(f"""
             ### 📋 కావలసిన పత్రాల సమర్పణ వివరాలు:
-            * **కావలసిన పత్రాలు:** {', '.join(details['docs'])}
+            * **కావలసిన పత్రాలు:** {', '.join(details.get(docs_key, details.get('docs', [])))}
             * **ఆన్‌లైన్ అప్లికేషన్ లింక్:** `{details['portal']}`
-            * **ఆఫ్‌లైన్ కార్యాలయం:** మీ సమీపంలోని **{details['office']}** లేదా మీసేవ కేంద్రం.
+            * **ఆఫ్‌లైన్ కార్యాలయం:** మీ సమీపంలోని **{details.get(office_key, details.get('office'))}**.
             """)
         else:
             st.markdown(f"""
             ### 📋 Submission Tracking Information:
-            * **Required Documents:** {', '.join(details['docs'])}
+            * **Required Documents:** {', '.join(details.get(docs_key, details.get('docs', [])))}
             * **Where to Submit Online:** Visit official portal `{details['portal']}`
-            * **Where to Submit Offline:** Visit nearest **{details['office']}**
+            * **Where to Submit Offline:** Visit nearest **{details.get(office_key, details.get('office'))}**
             """)
 
 # --- TAB 3: RTI DRAFTING ASSISTANT (Auto-fills Profile Data) ---
@@ -188,12 +192,20 @@ with tab3:
             if st.session_state.user_profile:
                 default_name = f"User ({st.session_state.user_profile['age']} yrs, {st.session_state.user_profile['profession']})"
             u_name = st.text_input("Your Name:", value=default_name)
-        
-    with col2:
-        st.markdown("### Preview Draft Application")
-        if st.button("Generate Official RTI Document"):
-            if u_name and u_addr and u_dept and u_griv:
-                draft = generate_rti_draft(u_name, u_addr, u_dept, u_griv, st.session_state.lang)
-                st.text_area("Copy this text to print/mail:", value=draft, height=350)
-            else:
-                st.error("Please fill in all mandatory fields before rendering.")
+        with col2:
+            default_addr = ""
+            if st.session_state.user_profile:
+                default_addr = f"{st.session_state.user_profile['state']}"
+            u_addr = st.text_input("Your State/District:", value=default_addr)
+
+    button_text = "Generate Official RTI Document" if st.session_state.lang == "English" else "అధికారిక RTI డాక్యుమెంట్ రూపొందించండి"
+    copy_label = "Copy this text to print/mail:" if st.session_state.lang == "English" else "ఈ టెక్స్ట్‌ను కాపీ చేసి ప్రింట్/మెయిల్ చేయండి:"
+    error_label = "Please describe your issue/grievance before generating the RTI document." if st.session_state.lang == "English" else "RTI డాక్యుమెంట్ తయారుచేయడానికి దయచేసి మీ సమస్యను వివరించండి."
+
+    if st.button(button_text):
+        if u_issue.strip():
+            draft = generate_rti_draft(u_name, u_addr, u_issue, st.session_state.lang)
+            rti_text = draft.get("rti_document") if isinstance(draft, dict) else str(draft)
+            st.text_area(copy_label, value=rti_text, height=350)
+        else:
+            st.error(error_label)
