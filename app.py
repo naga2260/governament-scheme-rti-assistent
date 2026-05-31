@@ -15,6 +15,25 @@ st.markdown(
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, .stSelectbox, .stTextInput {
         font-family: "Lohit Telugu", "Potti Sreeramulu", "Gidugu", "Noto Sans Telugu", sans-serif !important;
     }
+    .block-container {
+        padding-bottom: 7rem;
+    }
+    div[data-testid="stChatInput"] {
+        position: fixed;
+        bottom: 1rem;
+        left: 23rem;
+        right: 3rem;
+        z-index: 999;
+        background: #0e1117;
+        padding-top: 0.35rem;
+    }
+    @media (max-width: 900px) {
+        div[data-testid="stChatInput"] {
+            left: 1rem;
+            right: 1rem;
+            bottom: 0.75rem;
+        }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -205,6 +224,30 @@ def find_schemes_in_query(query):
     return matches
 
 
+def is_greeting_query(query):
+    normalized = query.strip().lower()
+    greetings = {
+        "hi",
+        "hello",
+        "hey",
+        "hii",
+        "hiii",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "namaste",
+        "నమస్తే",
+        "హాయ్",
+    }
+    return normalized in greetings
+
+
+def greeting_response():
+    if st.session_state.lang == "Telugu":
+        return "నమస్తే! మీ ప్రొఫైల్ ఆధారంగా అర్హమైన పథకాలు, పథకం వివరాలు, పత్రాలు లేదా దరఖాస్తు మార్గం గురించి అడగండి."
+    return "Hello! Ask me about eligible schemes, scheme benefits, required documents, or where to apply."
+
+
 # --- SIDEBAR: DYNAMIC PROFILE CAPTURE & CONTROLS ---
 with st.sidebar:
     st.header("🌐 Language / భాష")
@@ -280,7 +323,11 @@ with tab1:
             with st.spinner("Searching records..."):
                 selected_schemes = find_schemes_in_query(user_query)
 
-                if is_all_eligible_query(user_query):
+                if is_greeting_query(user_query):
+                    res = greeting_response()
+                    st.markdown(res)
+                    st.session_state.messages.append({"role": "assistant", "content": res})
+                elif is_all_eligible_query(user_query):
                     if not st.session_state.user_profile:
                         res = "Please fill and apply your profile in the sidebar first, then I can list matching schemes."
                         st.markdown(res)
