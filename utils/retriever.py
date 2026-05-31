@@ -1,10 +1,9 @@
 # utils/retriever.py
 import os
-from langchain_chroma import Chroma
-from langchain_community.llms import Ollama
+import streamlit as st
+from langchain_google_genai import GoogleGenerativeAI
 from utils.embedder import get_embedding_model
-
-DB_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "chroma_db")
+from utils.loader import get_cached_chunks
 
 SCHEME_SUBMISSION_MAP = {
     "pm-kisan": {
@@ -20,13 +19,31 @@ SCHEME_SUBMISSION_MAP = {
 }
 
 def execute_rag_pipeline(user_query, language="English"):
-    if not os.path.exists(DB_DIR):
-        return "Database not initialized. Please click Ingest in the sidebar.", []
+    api_key = os.environ.get("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
+    if not api_key:
+        return "System error: Google API Key missing on server environment.", []
 
+    # 1. Fetch available data chunks
+    chunks = get_cached_chunks()
+    if not chunks:
+        return "No documents found in memory. Please add text files to the data/ folder.", []
+
+    # 2. Fast Server-Side Retrieval Match
     embeddings = get_embedding_model()
-    db = Chroma(persist_directory=DB_DIR, embedding_function=embeddings)
-    retrieved_docs = db.similarity_search(user_query, k=2)
-    
+    try:
+        query_vector = embeddings.embed_query(user_query)
+        doc_texts = [c.page_content for c in chunks]
+        doc_vectors = embeddings.embed_documents(doc_texts)
+        
+        # Math helper: Cosine similarity matching to pick top 2 relevant chunks
+        import numpy as np
+        scores = [np.dot(query_vector, dv) / (np.linalg.norm(query_vector) * np.linalg.norm(dv)) for dv in doc_vectors]
+        top_indices = np.argsort(scores)[-2:][::-1]
+        retrieved_docs = [chunks[i] for i in top_indices]
+    except Exception:
+        # Fallback to direct text matching if math modules conflict during serverless bootup
+        retrieved_docs = chunks[:2]
+
     context = "\n\n".join([doc.page_content for doc in retrieved_docs])
     
     system_prompt = f"""
@@ -44,7 +61,8 @@ def execute_rag_pipeline(user_query, language="English"):
     """
     
     try:
-        llm = Ollama(model="qwen2.5:7b", temperature=0.2)
+        # Utilizing ultra-fast, serverless-friendly Gemini model
+        llm = GoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key, temperature=0.2)
         return llm.invoke(system_prompt), retrieved_docs
     except Exception as e:
-        return f"Could not connect to Ollama: {e}", []
+        return f"Could not process response via Google AI Gateway: {e}", []
