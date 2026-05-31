@@ -26,6 +26,185 @@ if "lang" not in st.session_state:
 if "user_profile" not in st.session_state:
     st.session_state.user_profile = None
 
+
+def scheme_label(scheme_key):
+    return scheme_key.replace("-", " ").title()
+
+
+def get_localized_list(details, base_key):
+    telugu_key = f"{base_key}_telugu"
+    if st.session_state.lang == "Telugu":
+        return details.get(telugu_key, details.get(base_key, []))
+    return details.get(base_key, [])
+
+
+def get_localized_value(details, base_key):
+    telugu_key = f"{base_key}_telugu"
+    if st.session_state.lang == "Telugu":
+        return details.get(telugu_key, details.get(base_key, ""))
+    return details.get(base_key, "")
+
+
+def evaluate_scheme_for_profile(scheme_key, profile):
+    if not profile:
+        return "Needs profile", ["Fill and apply your sidebar profile first."]
+
+    age = profile["age"]
+    gender = profile["gender"]
+    income = profile["income"]
+    profession = profile["profession"]
+    state = profile["state"]
+
+    likely = "Likely eligible"
+    possible = "May be eligible"
+    no = "Not eligible"
+
+    if scheme_key == "pm-kisan":
+        if profession == "Farmer":
+            return likely, ["You selected Farmer as profession.", "Final approval depends on landholding and PM-Kisan exclusion rules."]
+        return no, ["PM-Kisan is mainly for eligible landholding farmer families."]
+
+    if scheme_key == "ayushman-bharat":
+        if income <= 250000:
+            return possible, ["Your income is within the app's low-income screening limit.", "Final eligibility depends on PM-JAY/SECC or state health card records."]
+        return no, ["Income is above the app's basic screening limit of Rs. 2.5 lakh."]
+
+    if scheme_key == "pm-ujjwala":
+        if gender == "Female" and age >= 18 and income <= 250000:
+            return possible, ["You are an adult woman with low declared income.", "Final eligibility depends on poor household status and no existing LPG connection."]
+        return no, ["PM Ujjwala is for eligible adult women from poor households."]
+
+    if scheme_key == "pmmvy":
+        if gender == "Female" and 18 <= age <= 50:
+            return possible, ["You are within the usual maternity-age screening range.", "Final eligibility depends on pregnancy/lactation status and PMMVY category rules."]
+        return no, ["PMMVY is for eligible pregnant women and lactating mothers."]
+
+    if scheme_key in ["namo-drone-didi", "lakhpati-didi"]:
+        if gender == "Female":
+            return possible, ["This is routed through women Self Help Groups.", "Final eligibility depends on SHG membership and local DAY-NRLM selection."]
+        return no, ["This scheme is routed through women Self Help Groups."]
+
+    if scheme_key == "sukanya-samriddhi":
+        return possible, ["Useful if your household has a girl child below 10 years.", "The account is opened by a guardian for the girl child."]
+
+    if scheme_key == "atal-pension-yojana":
+        if 18 <= age <= 40:
+            return likely, ["Your age is within the APY joining range of 18 to 40 years."]
+        return no, ["APY joining age is generally 18 to 40 years."]
+
+    if scheme_key == "nsap-pensions":
+        if age >= 60:
+            return possible, ["Your age matches old-age pension screening.", "Final eligibility depends on BPL/vulnerability and state rules."]
+        if gender == "Female" and income <= 250000:
+            return possible, ["You may qualify for widow or other pension categories only if category-specific conditions apply."]
+        return no, ["NSAP needs old age, widow, disability, or other category-specific eligibility."]
+
+    if scheme_key == "mgnrega":
+        if age >= 18:
+            return possible, ["Adults in rural households can request wage employment.", "Final availability depends on job card and local Gram Panchayat registration."]
+        return no, ["MGNREGA work registration is for adults."]
+
+    if scheme_key == "pm-fasal-bima":
+        if profession == "Farmer":
+            return possible, ["You selected Farmer as profession.", "Final eligibility depends on notified crop, season, land/crop records, and enrolment window."]
+        return no, ["PMFBY is mainly for farmers growing notified crops."]
+
+    if scheme_key == "pm-svanidhi":
+        if profession in ["Business Owner", "Other", "Unemployed"]:
+            return possible, ["May apply if you are an urban street vendor.", "Final eligibility depends on vending certificate or letter of recommendation."]
+        return no, ["PM SVANidhi is for eligible urban street vendors."]
+
+    if scheme_key == "pm-mudra":
+        if profession in ["Business Owner", "Unemployed", "Other"]:
+            return possible, ["Useful for starting or expanding a small business.", "Final approval depends on business plan and lender assessment."]
+        return possible, ["Students may apply only if they have a real micro-business plan accepted by a lender."]
+
+    if scheme_key == "pm-vishwakarma":
+        return possible, ["May apply if you practise one of the notified traditional trades.", "Final eligibility depends on trade verification and registration."]
+
+    if scheme_key in ["pm-awas-gramin", "pm-awas-urban"]:
+        if income <= 300000:
+            housing_area = "rural" if scheme_key == "pm-awas-gramin" else "urban"
+            return possible, [f"Your income may fit basic {housing_area} housing support screening.", "Final eligibility depends on house ownership, deprivation list, and local verification."]
+        return possible, ["Housing support depends on category, ownership, and component-specific income limits."]
+
+    if scheme_key == "pm-jan-dhan":
+        return likely, ["Any unbanked citizen can approach a bank for a basic savings account."]
+
+    if scheme_key == "mission-shakti-women-support":
+        if gender == "Female":
+            return possible, ["Women can access relevant Mission Shakti support services depending on need and local availability."]
+        return no, ["Mission Shakti women support services are primarily for women."]
+
+    return possible, ["The app needs more information for a precise eligibility decision."]
+
+
+def build_scheme_summary(scheme_key, details, status=None, reasons=None):
+    benefits = get_localized_list(details, "benefits")
+    docs = get_localized_list(details, "docs")
+    office = get_localized_value(details, "office")
+    status_line = f"**Eligibility:** {status}\n\n" if status else ""
+    reason_lines = ""
+    if reasons:
+        reason_lines = "**Why:**\n" + "\n".join([f"- {reason}" for reason in reasons]) + "\n\n"
+
+    return (
+        f"### {scheme_label(scheme_key)}\n\n"
+        f"{status_line}"
+        f"{reason_lines}"
+        "**Benefits:**\n"
+        + "\n".join([f"- {benefit}" for benefit in benefits])
+        + "\n\n**Documents:**\n"
+        + "\n".join([f"- {doc}" for doc in docs])
+        + f"\n\n**Online Portal:** `{details['portal']}`"
+        + f"\n\n**Offline Office:** {office}"
+    )
+
+
+def render_scheme_expanders(items):
+    for item in items:
+        details = SCHEME_SUBMISSION_MAP[item["scheme"]]
+        title = scheme_label(item["scheme"])
+        if item.get("status"):
+            title = f"{title} - {item['status']}"
+        with st.expander(title):
+            st.markdown(build_scheme_summary(item["scheme"], details, item.get("status"), item.get("reasons")))
+
+
+def get_profile_scheme_matches(profile):
+    matches = []
+    for scheme_key in SCHEME_SUBMISSION_MAP:
+        status, reasons = evaluate_scheme_for_profile(scheme_key, profile)
+        if status != "Not eligible":
+            matches.append({"scheme": scheme_key, "status": status, "reasons": reasons})
+
+    rank = {"Likely eligible": 0, "May be eligible": 1, "Needs profile": 2}
+    return sorted(matches, key=lambda item: (rank.get(item["status"], 9), item["scheme"]))
+
+
+def is_all_eligible_query(query):
+    query = query.lower()
+    return any(phrase in query for phrase in [
+        "all schemes",
+        "eligible schemes",
+        "schemes i am eligible",
+        "schemes that i am eligible",
+        "what schemes",
+        "which schemes",
+        "recommend schemes",
+    ])
+
+
+def find_schemes_in_query(query):
+    normalized = query.lower().replace("_", "-")
+    matches = []
+    for scheme_key in SCHEME_SUBMISSION_MAP:
+        readable = scheme_key.replace("-", " ")
+        if scheme_key in normalized or readable in normalized:
+            matches.append(scheme_key)
+    return matches
+
+
 # --- SIDEBAR: DYNAMIC PROFILE CAPTURE & CONTROLS ---
 with st.sidebar:
     st.header("🌐 Language / భాష")
@@ -86,7 +265,11 @@ with tab1:
         
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+            if isinstance(msg["content"], dict) and msg["content"].get("type") == "scheme_cards":
+                st.markdown(msg["content"]["intro"])
+                render_scheme_expanders(msg["content"]["items"])
+            else:
+                st.markdown(msg["content"])
             
     if user_query := st.chat_input("Enter your query..."):
         st.session_state.messages.append({"role": "user", "content": user_query})
@@ -95,15 +278,47 @@ with tab1:
             
         with st.chat_message("assistant"):
             with st.spinner("Searching records..."):
-                # Append user profile parameters directly into the pipeline query if available
-                enriched_query = user_query
-                if st.session_state.user_profile:
-                    p = st.session_state.user_profile
-                    enriched_query += f" (Note: The user asking is a {p['age']} years old {p['profession']} from {p['state']} state with a annual income of Rs.{p['income']} and belongs to the {p['caste']} category. Check if they qualify based on these limits.)"
-                
-                res, docs = execute_rag_pipeline(enriched_query, st.session_state.lang)
-                st.markdown(res)
-                st.session_state.messages.append({"role": "assistant", "content": res})
+                selected_schemes = find_schemes_in_query(user_query)
+
+                if is_all_eligible_query(user_query):
+                    if not st.session_state.user_profile:
+                        res = "Please fill and apply your profile in the sidebar first, then I can list matching schemes."
+                        st.markdown(res)
+                        st.session_state.messages.append({"role": "assistant", "content": res})
+                    else:
+                        items = get_profile_scheme_matches(st.session_state.user_profile)
+                        intro = (
+                            f"Found **{len(items)} schemes** that match or may match your current profile. "
+                            "Open any scheme below to see benefits, documents, portal, office, and why it matched."
+                        )
+                        payload = {"type": "scheme_cards", "intro": intro, "items": items}
+                        st.markdown(intro)
+                        render_scheme_expanders(items)
+                        st.session_state.messages.append({"role": "assistant", "content": payload})
+                elif selected_schemes:
+                    items = []
+                    for scheme_key in selected_schemes:
+                        status = None
+                        reasons = None
+                        if st.session_state.user_profile:
+                            status, reasons = evaluate_scheme_for_profile(scheme_key, st.session_state.user_profile)
+                        items.append({"scheme": scheme_key, "status": status, "reasons": reasons})
+
+                    intro = "Here is the structured scheme information. Open the card for the full details."
+                    payload = {"type": "scheme_cards", "intro": intro, "items": items}
+                    st.markdown(intro)
+                    render_scheme_expanders(items)
+                    st.session_state.messages.append({"role": "assistant", "content": payload})
+                else:
+                    # Append user profile parameters directly into the pipeline query if available
+                    enriched_query = user_query
+                    if st.session_state.user_profile:
+                        p = st.session_state.user_profile
+                        enriched_query += f" (User profile: age {p['age']}, gender {p['gender']}, profession {p['profession']}, state {p['state']}, annual income Rs.{p['income']}, category {p['caste']}. Give practical, structured advice and mention if more details are needed.)"
+                    
+                    res, docs = execute_rag_pipeline(enriched_query, st.session_state.lang)
+                    st.markdown(res)
+                    st.session_state.messages.append({"role": "assistant", "content": res})
 
 # --- TAB 2: ROUTER & EXPLICIT VALIDATION ---
 with tab2:

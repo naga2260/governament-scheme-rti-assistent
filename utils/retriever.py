@@ -354,20 +354,29 @@ def execute_rag_pipeline(user_query, language="English"):
         doc_texts = [c.page_content for c in chunks]
         doc_vectors = embeddings.embed_documents(doc_texts)
         
-        # Math helper: Cosine similarity matching to pick top 2 relevant chunks
+        # Math helper: Cosine similarity matching to pick the most relevant chunks.
         import numpy as np
         scores = [np.dot(query_vector, dv) / (np.linalg.norm(query_vector) * np.linalg.norm(dv)) for dv in doc_vectors]
-        top_indices = np.argsort(scores)[-2:][::-1]
+        top_indices = np.argsort(scores)[-6:][::-1]
         retrieved_docs = [chunks[i] for i in top_indices]
     except Exception:
         # Fallback to direct text matching if math modules conflict during serverless bootup
-        retrieved_docs = chunks[:2]
+        retrieved_docs = chunks[:6]
 
     context = "\n\n".join([doc.page_content for doc in retrieved_docs])
     
     system_prompt = f"""
     You are an expert Indian Government Schemes Assistant.
     Answer the question accurately based ONLY on the provided context.
+    Be practical and structured. Prefer headings and bullet points.
+    When asked about a scheme, include:
+    - Who it is for
+    - Key benefits
+    - Eligibility
+    - Documents
+    - Where to apply
+    - Important caveats or next steps
+    If the context is missing a required fact, say what extra detail is needed instead of guessing.
 
     CRITICAL: You must write your response completely in {language}.
     If the requested language is Telugu, respond only in Telugu script and do not use any English words or transliteration.
