@@ -6,8 +6,14 @@ import html
 import hashlib
 from pathlib import Path
 from utils.loader import ingest_documents
-from langchain_google_genai import GoogleGenerativeAI
-from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP, transcribe_audio_query, get_google_api_key
+from utils.retriever import (
+    execute_rag_pipeline,
+    SCHEME_SUBMISSION_MAP,
+    transcribe_audio_query,
+    UI_TELUGU,
+    SCHEME_NAME_TELUGU,
+    QUESTION_TELUGU,
+)
 from utils.rti_generator import generate_rti_draft
 
 st.set_page_config(page_title="Praja Sahaya RAG", layout="wide")
@@ -63,72 +69,18 @@ if "user_profile" not in st.session_state:
     st.session_state.user_profile = None
 
 
-UI_TELUGU = {
-    "Check Exact Eligibility": "ఖచ్చితమైన అర్హతను తనిఖీ చేయండి",
-    "Select": "ఎంచుకోండి",
-    "Yes": "అవును",
-    "No": "కాదు",
-    "Not sure": "తెలియదు",
-    "Not yet": "ఇంకా లేదు",
-    "Can arrange": "ఏర్పాటు చేయగలను",
-    "Some documents missing": "కొన్ని పత్రాలు లేవు",
-    "Eligible": "అర్హులు",
-    "Not eligible": "అర్హులు కాదు",
-    "Need official verification": "అధికారిక ధృవీకరణ అవసరం",
-    "Answer questions to check": "తనిఖీ చేయడానికి ప్రశ్నలకు సమాధానం ఇవ్వండి",
-    "Select answers below to get an exact result for this scheme.": "ఈ పథకం కోసం ఖచ్చితమైన ఫలితం పొందడానికి క్రింద సమాధానాలు ఎంచుకోండి.",
-    "Some details are unclear. Check the source PDF or local office before applying.": "కొన్ని వివరాలు స్పష్టంగా లేవు. దరఖాస్తు చేసే ముందు సోర్స్ PDF లేదా స్థానిక కార్యాలయంలో తనిఖీ చేయండి.",
-    "Based on your answers, one required condition is not satisfied.": "మీ సమాధానాల ఆధారంగా, ఒక అవసరమైన షరతు నెరవేరలేదు.",
-    "Based on your answers, the applicant satisfies the listed conditions. Final approval still depends on official document verification.": "మీ సమాధానాల ఆధారంగా, దరఖాస్తుదారు పేర్కొన్న షరతులను నెరవేర్చారు. తుది ఆమోదం ఇంకా అధికారిక పత్రాల ధృవీకరణపై ఆధారపడి ఉంటుంది.",
-    "Benefits": "ప్రయోజనాలు",
-    "Eligibility": "అర్హత",
-    "Documents": "పత్రాలు",
-    "Online Portal / Source": "ఆన్‌లైన్ పోర్టల్ / మూలం",
-    "Offline Office": "ఆఫ్‌లైన్ కార్యాలయం",
-    "Official Source": "అధికారిక మూలం",
-    "Check eligibility": "అర్హత తనిఖీ చేయండి",
-    "Not eligible from profile": "ప్రొఫైల్ ఆధారంగా అర్హులు కాదు",
-}
-
-
 def ui_text(text):
     if st.session_state.lang == "Telugu":
         return UI_TELUGU.get(text, text)
     return text
 
 
-def has_telugu(text):
-    return any("\u0c00" <= char <= "\u0c7f" for char in text)
-
-
-@st.cache_data(show_spinner=False)
-def translate_text_to_telugu(text):
-    if not text or has_telugu(text):
-        return text
-
-    api_key = get_google_api_key()
-    if not api_key:
-        return text
-
-    try:
-        llm = GoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key, temperature=0.1)
-        prompt = f"""
-        Translate this government scheme UI text into clean Telugu script.
-        Keep official scheme names, acronyms, numbers, rupee amounts, URLs, and document names understandable.
-        Do not add new facts. Return only the translated text.
-
-        TEXT:
-        {text}
-        """
-        return llm.invoke(prompt).strip()
-    except Exception:
-        return text
-
-
-def localize_text(text):
+def localize_text(text, scheme_key=None):
     if st.session_state.lang != "Telugu":
         return text
-    return UI_TELUGU.get(text, translate_text_to_telugu(text))
+    if scheme_key and scheme_key in SCHEME_NAME_TELUGU:
+        return SCHEME_NAME_TELUGU[scheme_key]
+    return UI_TELUGU.get(text, QUESTION_TELUGU.get(text, text))
 
 
 def localize_options(option):
@@ -137,6 +89,14 @@ def localize_options(option):
 
 def scheme_label(scheme_key):
     return scheme_key.replace("-", " ").title()
+
+
+def scheme_display_name(scheme_key, details=None):
+    if st.session_state.lang == "Telugu" and scheme_key in SCHEME_NAME_TELUGU:
+        return SCHEME_NAME_TELUGU[scheme_key]
+    if details:
+        return details.get("name", scheme_label(scheme_key))
+    return scheme_label(scheme_key)
 
 
 def data_file_to_scheme_key(path):
@@ -206,7 +166,7 @@ def get_localized_list(details, base_key):
     if st.session_state.lang == "Telugu":
         if telugu_key in details:
             return details[telugu_key]
-        return [localize_text(item) for item in details.get(base_key, [])]
+        return details.get(base_key, [])
     return details.get(base_key, [])
 
 
@@ -215,7 +175,7 @@ def get_localized_value(details, base_key):
     if st.session_state.lang == "Telugu":
         if telugu_key in details:
             return details[telugu_key]
-        return localize_text(details.get(base_key, ""))
+        return details.get(base_key, "")
     return details.get(base_key, "")
 
 
@@ -475,7 +435,7 @@ def build_scheme_summary(scheme_key, details, status=None, reasons=None):
     status_line = ""
 
     summary = (
-        f"### {localize_text(details.get('name', scheme_label(scheme_key)))}\n\n"
+        f"### {scheme_display_name(scheme_key, details)}\n\n"
         f"{status_line}"
     )
     if benefits:
@@ -496,7 +456,7 @@ def build_scheme_summary(scheme_key, details, status=None, reasons=None):
 def render_scheme_expanders(items, key_prefix="chat"):
     for item in items:
         details = ALL_SCHEME_MAP[item["scheme"]]
-        title = localize_text(details.get("name", scheme_label(item["scheme"])))
+        title = scheme_display_name(item["scheme"], details)
         if item.get("status") == "Not eligible":
             title = f"{title} - {ui_text('Not eligible from profile')}"
         else:
@@ -736,7 +696,7 @@ with tab2:
     scheme_selection = st.selectbox(
         "Select Government Scheme to Check:" if st.session_state.lang == "English" else "తనిఖీ చేయాల్సిన ప్రభుత్వ పథకాన్ని ఎంచుకోండి:",
         ["Select"] + list(ALL_SCHEME_MAP.keys()),
-        format_func=lambda key: ui_text("Select") if key == "Select" else localize_text(ALL_SCHEME_MAP[key].get("name", scheme_label(key))),
+        format_func=lambda key: ui_text("Select") if key == "Select" else scheme_display_name(key, ALL_SCHEME_MAP[key]),
     )
     
     if scheme_selection != "Select":
