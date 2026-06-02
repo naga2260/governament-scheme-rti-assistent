@@ -1,0 +1,59 @@
+stages:
+  - quality
+  - security
+  - test
+  - changelog
+
+default:
+  image: python:3.11-slim
+  before_script:
+    - python -m pip install --upgrade pip
+    - pip install -r requirements.txt -r requirements-dev.txt
+
+ruff:
+  stage: quality
+  script:
+    - ruff check .
+
+mypy:
+  stage: quality
+  script:
+    - mypy app.py utils
+
+secret_scanning:
+  stage: security
+  script:
+    - detect-secrets scan --baseline .secrets.baseline
+    - apt-get update && apt-get install -y wget git
+    - wget -qO- https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz
+    - ./gitleaks detect --source . --no-git --redact --verbose
+
+dependency_audit:
+  stage: security
+  script:
+    - pip-audit -r requirements.txt
+
+static_security:
+  stage: security
+  script:
+    - bandit -c pyproject.toml -r app.py utils
+
+tests:
+  stage: test
+  script:
+    - pytest --cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=1
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - coverage.xml
+
+changelog:
+  stage: changelog
+  image: alpine:3.20
+  before_script:
+    - apk add --no-cache git git-cliff
+  script:
+    - git-cliff --config cliff.toml --output CHANGELOG.md

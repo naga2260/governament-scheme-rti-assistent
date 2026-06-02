@@ -1,0 +1,46 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+exclude = [
+    ".venv",
+    "chroma_db",
+    "data_pdfs",
+]
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+follow_imports = "silent"
+allow_untyped_defs = true
+check_untyped_defs = false
+warn_unused_ignores = false
+exclude = [
+    "^\\.venv/",
+    "^chroma_db/",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=1"
+
+[tool.coverage.run]
+omit = [
+    ".venv/*",
+    "tests/*",
+    "chroma_db/*",
+]
+
+[tool.coverage.report]
+fail_under = 1
+show_missing = true
+
+[tool.bandit]
+exclude_dirs = [".venv", "tests", "chroma_db"]
+skips = ["B101"]
+
+[tool.vulture]
+paths = ["app.py", "utils"]
+min_confidence = 80

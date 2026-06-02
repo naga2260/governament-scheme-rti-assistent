@@ -1,0 +1,12 @@
+ruff
+mypy
+pytest
+pytest-cov
+pip-audit
+detect-secrets
+bandit
+vulture
+pylint
+flake8
+semgrep
+pyupgrade
