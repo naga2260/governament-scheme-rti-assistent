@@ -6,7 +6,8 @@ import html
 import hashlib
 from pathlib import Path
 from utils.loader import ingest_documents
-from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP, transcribe_audio_query
+from langchain_google_genai import GoogleGenerativeAI
+from utils.retriever import execute_rag_pipeline, SCHEME_SUBMISSION_MAP, transcribe_audio_query, get_google_api_key
 from utils.rti_generator import generate_rti_draft
 
 st.set_page_config(page_title="Praja Sahaya RAG", layout="wide")
@@ -60,6 +61,78 @@ if "lang" not in st.session_state:
     st.session_state.lang = "English"
 if "user_profile" not in st.session_state:
     st.session_state.user_profile = None
+
+
+UI_TELUGU = {
+    "Check Exact Eligibility": "ఖచ్చితమైన అర్హతను తనిఖీ చేయండి",
+    "Select": "ఎంచుకోండి",
+    "Yes": "అవును",
+    "No": "కాదు",
+    "Not sure": "తెలియదు",
+    "Not yet": "ఇంకా లేదు",
+    "Can arrange": "ఏర్పాటు చేయగలను",
+    "Some documents missing": "కొన్ని పత్రాలు లేవు",
+    "Eligible": "అర్హులు",
+    "Not eligible": "అర్హులు కాదు",
+    "Need official verification": "అధికారిక ధృవీకరణ అవసరం",
+    "Answer questions to check": "తనిఖీ చేయడానికి ప్రశ్నలకు సమాధానం ఇవ్వండి",
+    "Select answers below to get an exact result for this scheme.": "ఈ పథకం కోసం ఖచ్చితమైన ఫలితం పొందడానికి క్రింద సమాధానాలు ఎంచుకోండి.",
+    "Some details are unclear. Check the source PDF or local office before applying.": "కొన్ని వివరాలు స్పష్టంగా లేవు. దరఖాస్తు చేసే ముందు సోర్స్ PDF లేదా స్థానిక కార్యాలయంలో తనిఖీ చేయండి.",
+    "Based on your answers, one required condition is not satisfied.": "మీ సమాధానాల ఆధారంగా, ఒక అవసరమైన షరతు నెరవేరలేదు.",
+    "Based on your answers, the applicant satisfies the listed conditions. Final approval still depends on official document verification.": "మీ సమాధానాల ఆధారంగా, దరఖాస్తుదారు పేర్కొన్న షరతులను నెరవేర్చారు. తుది ఆమోదం ఇంకా అధికారిక పత్రాల ధృవీకరణపై ఆధారపడి ఉంటుంది.",
+    "Benefits": "ప్రయోజనాలు",
+    "Eligibility": "అర్హత",
+    "Documents": "పత్రాలు",
+    "Online Portal / Source": "ఆన్‌లైన్ పోర్టల్ / మూలం",
+    "Offline Office": "ఆఫ్‌లైన్ కార్యాలయం",
+    "Official Source": "అధికారిక మూలం",
+    "Check eligibility": "అర్హత తనిఖీ చేయండి",
+    "Not eligible from profile": "ప్రొఫైల్ ఆధారంగా అర్హులు కాదు",
+}
+
+
+def ui_text(text):
+    if st.session_state.lang == "Telugu":
+        return UI_TELUGU.get(text, text)
+    return text
+
+
+def has_telugu(text):
+    return any("\u0c00" <= char <= "\u0c7f" for char in text)
+
+
+@st.cache_data(show_spinner=False)
+def translate_text_to_telugu(text):
+    if not text or has_telugu(text):
+        return text
+
+    api_key = get_google_api_key()
+    if not api_key:
+        return text
+
+    try:
+        llm = GoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key, temperature=0.1)
+        prompt = f"""
+        Translate this government scheme UI text into clean Telugu script.
+        Keep official scheme names, acronyms, numbers, rupee amounts, URLs, and document names understandable.
+        Do not add new facts. Return only the translated text.
+
+        TEXT:
+        {text}
+        """
+        return llm.invoke(prompt).strip()
+    except Exception:
+        return text
+
+
+def localize_text(text):
+    if st.session_state.lang != "Telugu":
+        return text
+    return UI_TELUGU.get(text, translate_text_to_telugu(text))
+
+
+def localize_options(option):
+    return ui_text(option)
 
 
 def scheme_label(scheme_key):
@@ -131,14 +204,18 @@ ALL_SCHEME_MAP = load_data_scheme_map()
 def get_localized_list(details, base_key):
     telugu_key = f"{base_key}_telugu"
     if st.session_state.lang == "Telugu":
-        return details.get(telugu_key, details.get(base_key, []))
+        if telugu_key in details:
+            return details[telugu_key]
+        return [localize_text(item) for item in details.get(base_key, [])]
     return details.get(base_key, [])
 
 
 def get_localized_value(details, base_key):
     telugu_key = f"{base_key}_telugu"
     if st.session_state.lang == "Telugu":
-        return details.get(telugu_key, details.get(base_key, ""))
+        if telugu_key in details:
+            return details[telugu_key]
+        return localize_text(details.get(base_key, ""))
     return details.get(base_key, "")
 
 
@@ -368,24 +445,25 @@ def evaluate_question_answers(scheme_key, details, key_prefix=""):
 
 
 def render_interactive_eligibility(scheme_key, details, key_prefix=""):
-    st.markdown("#### Check Exact Eligibility")
+    st.markdown(f"#### {ui_text('Check Exact Eligibility')}")
     questions = get_scheme_questions(scheme_key, details)
     for question_id, question, options, _ in questions:
         st.selectbox(
-            question,
+            localize_text(question),
             ["Select"] + options,
             key=f"{key_prefix}_eligibility_{scheme_key}_{question_id}",
+            format_func=localize_options,
         )
 
     result, level, message = evaluate_question_answers(scheme_key, details, key_prefix)
     if level == "success":
-        st.success(f"✅ {result}: {message}")
+        st.success(f"✅ {ui_text(result)}: {localize_text(message)}")
     elif level == "error":
-        st.error(f"❌ {result}: {message}")
+        st.error(f"❌ {ui_text(result)}: {localize_text(message)}")
     elif level == "warning":
-        st.warning(f"⚠️ {result}: {message}")
+        st.warning(f"⚠️ {ui_text(result)}: {localize_text(message)}")
     else:
-        st.info(f"ℹ️ {result}: {message}")
+        st.info(f"ℹ️ {ui_text(result)}: {localize_text(message)}")
 
 
 def build_scheme_summary(scheme_key, details, status=None, reasons=None):
@@ -397,32 +475,32 @@ def build_scheme_summary(scheme_key, details, status=None, reasons=None):
     status_line = ""
 
     summary = (
-        f"### {details.get('name', scheme_label(scheme_key))}\n\n"
+        f"### {localize_text(details.get('name', scheme_label(scheme_key)))}\n\n"
         f"{status_line}"
     )
     if benefits:
-        summary += "**Benefits:**\n" + "\n".join([f"- {benefit}" for benefit in benefits])
+        summary += f"**{ui_text('Benefits')}:**\n" + "\n".join([f"- {benefit}" for benefit in benefits])
     if eligibility:
-        summary += "\n\n**Eligibility:**\n" + "\n".join([f"- {item}" for item in eligibility])
+        summary += f"\n\n**{ui_text('Eligibility')}:**\n" + "\n".join([f"- {item}" for item in eligibility])
     if docs:
-        summary += "\n\n**Documents:**\n" + "\n".join([f"- {doc}" for doc in docs])
+        summary += f"\n\n**{ui_text('Documents')}:**\n" + "\n".join([f"- {doc}" for doc in docs])
     summary += (
-        f"\n\n**Online Portal / Source:** `{details.get('portal', 'See source PDF')}`"
-        + f"\n\n**Offline Office:** {office}"
+        f"\n\n**{ui_text('Online Portal / Source')}:** `{details.get('portal', 'See source PDF')}`"
+        + f"\n\n**{ui_text('Offline Office')}:** {office}"
     )
     if source:
-        summary += "\n\n**Official Source:**\n" + "\n".join([f"- {item}" for item in source])
+        summary += f"\n\n**{ui_text('Official Source')}:**\n" + "\n".join([f"- {item}" for item in source])
     return summary
 
 
 def render_scheme_expanders(items, key_prefix="chat"):
     for item in items:
         details = ALL_SCHEME_MAP[item["scheme"]]
-        title = details.get("name", scheme_label(item["scheme"]))
+        title = localize_text(details.get("name", scheme_label(item["scheme"])))
         if item.get("status") == "Not eligible":
-            title = f"{title} - Not eligible from profile"
+            title = f"{title} - {ui_text('Not eligible from profile')}"
         else:
-            title = f"{title} - Check eligibility"
+            title = f"{title} - {ui_text('Check eligibility')}"
         with st.expander(title):
             render_interactive_eligibility(item["scheme"], details, key_prefix)
             st.divider()
@@ -509,13 +587,16 @@ def create_chat_response(user_query):
 
     if is_all_eligible_query(user_query):
         if not st.session_state.user_profile:
-            return "Please fill and apply your profile in the sidebar first, then I can list matching schemes."
+            return localize_text("Please fill and apply your profile in the sidebar first, then I can list matching schemes.")
 
         items = get_profile_scheme_matches(st.session_state.user_profile)
-        intro = (
-            f"Found **{len(items)} schemes** worth checking from your current profile. "
-            "Open a scheme and answer the quick questions to get Eligible or Not eligible."
-        )
+        if st.session_state.lang == "Telugu":
+            intro = f"మీ ప్రస్తుత ప్రొఫైల్ ఆధారంగా తనిఖీ చేయాల్సిన **{len(items)} పథకాలు** కనుగొన్నాను. పథకాన్ని తెరిచి త్వరిత ప్రశ్నలకు సమాధానం ఇస్తే అర్హత ఫలితం తెలుస్తుంది."
+        else:
+            intro = (
+                f"Found **{len(items)} schemes** worth checking from your current profile. "
+                "Open a scheme and answer the quick questions to get Eligible or Not eligible."
+            )
         return {"type": "scheme_cards", "intro": intro, "items": items}
 
     if selected_schemes:
@@ -529,7 +610,7 @@ def create_chat_response(user_query):
 
         return {
             "type": "scheme_cards",
-            "intro": "Here is the structured scheme information. Open the card for the full details.",
+            "intro": localize_text("Here is the structured scheme information. Open the card for the full details."),
             "items": items,
         }
 
@@ -652,7 +733,11 @@ with tab1:
 # --- TAB 2: ROUTER & EXPLICIT VALIDATION ---
 with tab2:
     st.header("Document Submission & Eligibility Screener")
-    scheme_selection = st.selectbox("Select Government Scheme to Check:", ["Select"] + list(ALL_SCHEME_MAP.keys()))
+    scheme_selection = st.selectbox(
+        "Select Government Scheme to Check:" if st.session_state.lang == "English" else "తనిఖీ చేయాల్సిన ప్రభుత్వ పథకాన్ని ఎంచుకోండి:",
+        ["Select"] + list(ALL_SCHEME_MAP.keys()),
+        format_func=lambda key: ui_text("Select") if key == "Select" else localize_text(ALL_SCHEME_MAP[key].get("name", scheme_label(key))),
+    )
     
     if scheme_selection != "Select":
         details = ALL_SCHEME_MAP[scheme_selection]
@@ -686,12 +771,13 @@ with tab2:
 
         render_interactive_eligibility(scheme_selection, details, "router")
 
-        benefits_key = "benefits_telugu" if st.session_state.lang == "Telugu" else "benefits"
-        docs_key = "docs_telugu" if st.session_state.lang == "Telugu" else "docs"
-        office_key = "office_telugu" if st.session_state.lang == "Telugu" else "office"
+        benefits = get_localized_list(details, "benefits")
+        docs = get_localized_list(details, "docs")
+        eligibility = get_localized_list(details, "eligibility")
+        office = get_localized_value(details, "office")
 
         st.subheader("🎁 Scheme Benefits" if st.session_state.lang == "English" else "🎁 పథకం ప్రయోజనాలు")
-        for benefit in details.get(benefits_key, details.get("benefits", [])):
+        for benefit in benefits:
             st.markdown(f"- {benefit}")
 
         pdf_path = get_scheme_pdf_path(scheme_selection)
@@ -707,30 +793,30 @@ with tab2:
         if st.session_state.lang == "Telugu":
             st.markdown(f"""
             ### 📋 కావలసిన పత్రాల సమర్పణ వివరాలు:
-            * **కావలసిన పత్రాలు:** {', '.join(details.get(docs_key, details.get('docs', [])))}
+            * **కావలసిన పత్రాలు:** {', '.join(docs)}
             * **ఆన్‌లైన్ అప్లికేషన్ లింక్:** `{details.get('portal', 'See source PDF')}`
-            * **ఆఫ్‌లైన్ కార్యాలయం:** మీ సమీపంలోని **{details.get(office_key, details.get('office'))}**.
+            * **ఆఫ్‌లైన్ కార్యాలయం:** మీ సమీపంలోని **{office}**.
             """)
         else:
             st.markdown(f"""
             ### 📋 Submission Tracking Information:
-            * **Required Documents:** {', '.join(details.get(docs_key, details.get('docs', [])))}
+            * **Required Documents:** {', '.join(docs)}
             * **Where to Submit Online:** Visit official portal `{details.get('portal', 'See source PDF')}`
-            * **Where to Submit Offline:** Visit nearest **{details.get(office_key, details.get('office'))}**
+            * **Where to Submit Offline:** Visit nearest **{office}**
             """)
 
-        if details.get("eligibility"):
-            st.markdown("### ✅ Eligibility Details")
-            for item in details["eligibility"]:
+        if eligibility:
+            st.markdown("### ✅ Eligibility Details" if st.session_state.lang == "English" else "### ✅ అర్హత వివరాలు")
+            for item in eligibility:
                 st.markdown(f"- {item}")
 
         if details.get("source"):
-            st.markdown("### 🔗 Official Source")
+            st.markdown("### 🔗 Official Source" if st.session_state.lang == "English" else "### 🔗 అధికారిక మూలం")
             for source in details["source"]:
                 st.markdown(f"- {source}")
 
         if details.get("raw_text") and scheme_selection not in SCHEME_SUBMISSION_MAP:
-            with st.expander("View Full Source Text"):
+            with st.expander("View Full Source Text" if st.session_state.lang == "English" else "పూర్తి మూల పాఠ్యాన్ని చూడండి"):
                 st.text(details["raw_text"])
 
 # --- TAB 3: RTI DRAFTING ASSISTANT (Auto-fills Profile Data) ---
