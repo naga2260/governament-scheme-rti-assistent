@@ -236,21 +236,169 @@ def evaluate_scheme_for_profile(scheme_key, profile):
     return possible, ["The app needs more information for a precise eligibility decision."]
 
 
+def get_scheme_questions(scheme_key, details):
+    generic_docs = details.get("docs", [])
+    generic_eligibility = details.get("eligibility", [])
+
+    questions = {
+        "pm-kisan": [
+            ("farmer", "Are you or your family an eligible landholding farmer?", ["Yes", "No"], "Yes"),
+            ("land_record", "Do you have land records / Pattadar passbook for the farm land?", ["Yes", "No"], "Yes"),
+            ("exclusion", "Are you in any PM-Kisan exclusion category such as income tax payer, government employee, or high-income professional?", ["No", "Yes"], "No"),
+        ],
+        "ayushman-bharat": [
+            ("listed", "Is your family listed under PM-JAY / state health card / eligible ration card records?", ["Yes", "No", "Not sure"], "Yes"),
+            ("income", "Is your annual family income within the low-income limit used locally?", ["Yes", "No", "Not sure"], "Yes"),
+        ],
+        "pm-ujjwala": [
+            ("adult_woman", "Is the applicant an adult woman aged 18 or above?", ["Yes", "No"], "Yes"),
+            ("poor_household", "Does the household have ration card / poor household eligibility proof?", ["Yes", "No"], "Yes"),
+            ("no_lpg", "Does the household have no existing LPG connection?", ["Yes", "No"], "Yes"),
+        ],
+        "pmmvy": [
+            ("pregnant_lactating", "Is the applicant currently pregnant or a lactating mother?", ["Yes", "No"], "Yes"),
+            ("eligible_category", "Does she match one PMMVY category such as SC/ST, BPL/NFSA, PM-JAY, e-Shram, MGNREGA, PM-Kisan woman farmer, disability, or income below Rs. 8 lakh?", ["Yes", "No", "Not sure"], "Yes"),
+            ("regular_job", "Is she in regular Central/State Government or PSU employment with similar maternity benefit?", ["No", "Yes"], "No"),
+        ],
+        "namo-drone-didi": [
+            ("woman_shg", "Are you a member of a women Self Help Group?", ["Yes", "No"], "Yes"),
+            ("local_selection", "Has your SHG been selected or recommended through DAY-NRLM / local mission channels?", ["Yes", "No", "Not yet"], "Yes"),
+        ],
+        "lakhpati-didi": [
+            ("woman_shg", "Are you a woman Self Help Group member?", ["Yes", "No"], "Yes"),
+            ("livelihood", "Do you have or plan a livelihood activity such as agriculture, livestock, services, or small business?", ["Yes", "No"], "Yes"),
+        ],
+        "sukanya-samriddhi": [
+            ("girl_child", "Is the account for a girl child?", ["Yes", "No"], "Yes"),
+            ("under_ten", "Is the girl child below 10 years of age?", ["Yes", "No"], "Yes"),
+            ("one_account", "Is there no existing Sukanya account for the same girl child?", ["Yes", "No"], "Yes"),
+        ],
+        "atal-pension-yojana": [
+            ("age", "Are you between 18 and 40 years old?", ["Yes", "No"], "Yes"),
+            ("bank", "Do you have a savings bank or post office account for auto-debit?", ["Yes", "No"], "Yes"),
+            ("taxpayer", "Are you an income tax payer?", ["No", "Yes"], "No"),
+        ],
+        "nsap-pensions": [
+            ("category", "Do you fall under old-age, widow, disability, or other NSAP pension category?", ["Yes", "No"], "Yes"),
+            ("bpl", "Do you have BPL/ration/vulnerability proof required locally?", ["Yes", "No", "Not sure"], "Yes"),
+        ],
+        "mgnrega": [
+            ("adult", "Are you 18 years or older?", ["Yes", "No"], "Yes"),
+            ("rural", "Does your household live in a rural area?", ["Yes", "No"], "Yes"),
+            ("job_card", "Do you have or can apply for an MGNREGA job card?", ["Yes", "No"], "Yes"),
+        ],
+        "pm-fasal-bima": [
+            ("farmer", "Are you a farmer cultivating a notified crop in the current season?", ["Yes", "No", "Not sure"], "Yes"),
+            ("records", "Do you have land/crop sowing records or bank/KCC crop loan details?", ["Yes", "No"], "Yes"),
+        ],
+        "pm-svanidhi": [
+            ("vendor", "Are you an urban street vendor?", ["Yes", "No"], "Yes"),
+            ("vendor_proof", "Do you have Certificate of Vending or Letter of Recommendation?", ["Yes", "No", "Can arrange"], "Yes"),
+        ],
+        "pm-mudra": [
+            ("business", "Do you run or plan to start a micro/small business?", ["Yes", "No"], "Yes"),
+            ("loan_need", "Do you need a business loan for working capital, equipment, or expansion?", ["Yes", "No"], "Yes"),
+            ("defaulter", "Are you currently a bank loan defaulter?", ["No", "Yes"], "No"),
+        ],
+        "pm-vishwakarma": [
+            ("trade", "Do you practise one of the notified traditional artisan/craft trades?", ["Yes", "No", "Not sure"], "Yes"),
+            ("self_employed", "Are you self-employed in that trade?", ["Yes", "No"], "Yes"),
+        ],
+        "pm-awas-gramin": [
+            ("rural", "Do you live in a rural area?", ["Yes", "No"], "Yes"),
+            ("no_pucca", "Does your household lack a pucca house?", ["Yes", "No"], "Yes"),
+            ("list", "Is your name in the local housing/deprivation/beneficiary list?", ["Yes", "No", "Not sure"], "Yes"),
+        ],
+        "pm-awas-urban": [
+            ("urban", "Do you live in an urban local body area?", ["Yes", "No"], "Yes"),
+            ("no_house", "Does your family not own a pucca house in India?", ["Yes", "No"], "Yes"),
+            ("income", "Does your household fit the applicable EWS/LIG/MIG income category?", ["Yes", "No", "Not sure"], "Yes"),
+        ],
+        "pm-jan-dhan": [
+            ("no_account", "Do you need a basic bank account or currently have no usable bank account?", ["Yes", "No"], "Yes"),
+            ("id", "Do you have Aadhaar or another valid identity document?", ["Yes", "No"], "Yes"),
+        ],
+        "mission-shakti-women-support": [
+            ("woman", "Is the applicant a woman needing safety, support, shelter, counselling, legal, medical, or childcare assistance?", ["Yes", "No"], "Yes"),
+            ("local_service", "Is there a One Stop Centre, WCD office, helpline, or local service available to contact?", ["Yes", "No", "Not sure"], "Yes"),
+        ],
+    }
+
+    if scheme_key in questions:
+        return questions[scheme_key]
+
+    text = " ".join(generic_eligibility + generic_docs).lower()
+    if "girl" in text or "women" in text or "woman" in text:
+        target_question = "Does the applicant match the women/girl beneficiary condition for this scheme?"
+    elif "student" in text or "scholarship" in text or "school" in text:
+        target_question = "Does the applicant match the student/course/school condition for this scheme?"
+    elif "farmer" in text or "crop" in text or "agriculture" in text:
+        target_question = "Does the applicant match the farmer/agriculture condition for this scheme?"
+    elif "worker" in text or "labour" in text or "unorganised" in text:
+        target_question = "Does the applicant match the worker/labour category for this scheme?"
+    elif "enterprise" in text or "business" in text or "startup" in text or "msme" in text:
+        target_question = "Does the applicant have the required business/entity/project condition for this scheme?"
+    else:
+        target_question = "Does the applicant match the target beneficiary condition described in the eligibility section?"
+
+    return [
+        ("target", target_question, ["Yes", "No", "Not sure"], "Yes"),
+        ("documents", "Can the applicant provide the main documents listed for this scheme?", ["Yes", "No", "Some documents missing"], "Yes"),
+        ("local_rules", "Does the applicant meet the local/state/category/income rules mentioned by the department?", ["Yes", "No", "Not sure"], "Yes"),
+    ]
+
+
+def get_question_answer(scheme_key, question_id, key_prefix=""):
+    return st.session_state.get(f"{key_prefix}_eligibility_{scheme_key}_{question_id}", "Select")
+
+
+def evaluate_question_answers(scheme_key, details, key_prefix=""):
+    questions = get_scheme_questions(scheme_key, details)
+    answers = [get_question_answer(scheme_key, question_id, key_prefix) for question_id, _, _, _ in questions]
+    if any(answer == "Select" for answer in answers):
+        return "Answer questions to check", "info", "Select answers below to get an exact result for this scheme."
+
+    for (question_id, _, _, required), answer in zip(questions, answers):
+        if answer != required:
+            if answer == "Not sure":
+                return "Need official verification", "warning", "Some details are unclear. Check the source PDF or local office before applying."
+            return "Not eligible", "error", "Based on your answers, one required condition is not satisfied."
+
+    return "Eligible", "success", "Based on your answers, the applicant satisfies the listed conditions. Final approval still depends on official document verification."
+
+
+def render_interactive_eligibility(scheme_key, details, key_prefix=""):
+    st.markdown("#### Check Exact Eligibility")
+    questions = get_scheme_questions(scheme_key, details)
+    for question_id, question, options, _ in questions:
+        st.selectbox(
+            question,
+            ["Select"] + options,
+            key=f"{key_prefix}_eligibility_{scheme_key}_{question_id}",
+        )
+
+    result, level, message = evaluate_question_answers(scheme_key, details, key_prefix)
+    if level == "success":
+        st.success(f"✅ {result}: {message}")
+    elif level == "error":
+        st.error(f"❌ {result}: {message}")
+    elif level == "warning":
+        st.warning(f"⚠️ {result}: {message}")
+    else:
+        st.info(f"ℹ️ {result}: {message}")
+
+
 def build_scheme_summary(scheme_key, details, status=None, reasons=None):
     benefits = get_localized_list(details, "benefits")
     docs = get_localized_list(details, "docs")
     eligibility = get_localized_list(details, "eligibility")
     source = details.get("source", [])
     office = get_localized_value(details, "office")
-    status_line = f"**Eligibility:** {status}\n\n" if status else ""
-    reason_lines = ""
-    if reasons:
-        reason_lines = "**Why:**\n" + "\n".join([f"- {reason}" for reason in reasons]) + "\n\n"
+    status_line = ""
 
     summary = (
         f"### {details.get('name', scheme_label(scheme_key))}\n\n"
         f"{status_line}"
-        f"{reason_lines}"
     )
     if benefits:
         summary += "**Benefits:**\n" + "\n".join([f"- {benefit}" for benefit in benefits])
@@ -267,13 +415,17 @@ def build_scheme_summary(scheme_key, details, status=None, reasons=None):
     return summary
 
 
-def render_scheme_expanders(items):
+def render_scheme_expanders(items, key_prefix="chat"):
     for item in items:
         details = ALL_SCHEME_MAP[item["scheme"]]
         title = details.get("name", scheme_label(item["scheme"]))
-        if item.get("status"):
-            title = f"{title} - {item['status']}"
+        if item.get("status") == "Not eligible":
+            title = f"{title} - Not eligible from profile"
+        else:
+            title = f"{title} - Check eligibility"
         with st.expander(title):
+            render_interactive_eligibility(item["scheme"], details, key_prefix)
+            st.divider()
             st.markdown(build_scheme_summary(item["scheme"], details, item.get("status"), item.get("reasons")))
 
 
@@ -361,8 +513,8 @@ def create_chat_response(user_query):
 
         items = get_profile_scheme_matches(st.session_state.user_profile)
         intro = (
-            f"Found **{len(items)} schemes** that match or may match your current profile. "
-            "Open any scheme below to see benefits, documents, portal, office, and why it matched."
+            f"Found **{len(items)} schemes** worth checking from your current profile. "
+            "Open a scheme and answer the quick questions to get Eligible or Not eligible."
         )
         return {"type": "scheme_cards", "intro": intro, "items": items}
 
@@ -390,10 +542,10 @@ def create_chat_response(user_query):
     return res
 
 
-def render_chat_content(content):
+def render_chat_content(content, key_prefix="chat"):
     if isinstance(content, dict) and content.get("type") == "scheme_cards":
         st.markdown(content["intro"])
-        render_scheme_expanders(content["items"])
+        render_scheme_expanders(content["items"], key_prefix)
     else:
         st.markdown(content)
 
@@ -460,9 +612,9 @@ with tab1:
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    for msg in st.session_state.messages:
+    for msg_index, msg in enumerate(st.session_state.messages):
         with st.chat_message(msg["role"]):
-            render_chat_content(msg["content"])
+            render_chat_content(msg["content"], f"msg_{msg_index}")
 
     audio_query = st.audio_input("🎙️ Voice question / వాయిస్ ప్రశ్న")
     if audio_query is not None:
@@ -494,7 +646,7 @@ with tab1:
         with st.chat_message("assistant"):
             with st.spinner("Searching records..."):
                 response = create_chat_response(user_query)
-                render_chat_content(response)
+                render_chat_content(response, f"msg_{len(st.session_state.messages)}")
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
 # --- TAB 2: ROUTER & EXPLICIT VALIDATION ---
@@ -531,6 +683,8 @@ with tab2:
             st.error(f"❌ **Not Eligible / అర్హత లేదు:** {reason_msg}")
         else:
             st.success("✅ **Status: Eligible based on basic parameters!**" if st.session_state.lang == "English" else "✅ **స్థితి: ప్రాథమిక పారామితుల ఆధారంగా మీరు అర్హులు!**")
+
+        render_interactive_eligibility(scheme_selection, details, "router")
 
         benefits_key = "benefits_telugu" if st.session_state.lang == "Telugu" else "benefits"
         docs_key = "docs_telugu" if st.session_state.lang == "Telugu" else "docs"
