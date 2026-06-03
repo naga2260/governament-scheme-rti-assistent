@@ -3,7 +3,7 @@ stages:
   - format
   - type_check
   - security
-  - coverage
+  - test
   - changelog
 
 default:
@@ -46,7 +46,7 @@ static_security:
     - bandit -c pyproject.toml -r app.py utils
 
 coverage:
-  stage: coverage
+  stage: test
   script:
     - pytest --cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=1
   artifacts:
