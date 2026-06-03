@@ -13,8 +13,12 @@ chroma_db/
 
 # Environment variables and local secrets
 .env
-.env.*
+.env.local
+.env.*.local
 .streamlit/secrets.toml
+
+# Exception: track .env.example as template
+!.env.example
 
 # Editor and OS files
 .vscode/
