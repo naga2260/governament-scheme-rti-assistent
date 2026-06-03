@@ -1,7 +1,9 @@
 stages:
-  - quality
+  - lint
+  - format
+  - type_check
   - security
-  - test
+  - coverage
   - changelog
 
 default:
@@ -10,13 +12,18 @@ default:
     - python -m pip install --upgrade pip
     - pip install -r requirements.txt -r requirements-dev.txt
 
-ruff:
-  stage: quality
+ruff-lint:
+  stage: lint
   script:
     - ruff check .
 
+ruff-format:
+  stage: format
+  script:
+    - ruff format --check .
+
 mypy:
-  stage: quality
+  stage: type_check
   script:
     - mypy app.py utils
 
@@ -38,8 +45,8 @@ static_security:
   script:
     - bandit -c pyproject.toml -r app.py utils
 
-tests:
-  stage: test
+coverage:
+  stage: coverage
   script:
     - pytest --cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=1
   artifacts:
